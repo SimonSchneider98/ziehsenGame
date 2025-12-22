@@ -1,14 +1,12 @@
 import fs from "fs";
-import path from "path";
 
 import {
   getColumnCopy,
   getMatrixCopy,
   matricesAreEqual,
   printMatrices,
+  loadPreviousStarters,
 } from "./utils.js";
-
-const startersDir = "./starters";
 
 export { getStarters };
 
@@ -34,26 +32,6 @@ const getStarters = (amountOfZiehsen, printStarters = false) => {
   if (printStarters) printMatrices(starters);
 
   return starters;
-};
-
-const loadPreviousStarters = (amountOfZiehsen) => {
-  const previousStarters = [];
-  for (let i = 1; i < amountOfZiehsen; i++) {
-    const pattern = new RegExp(`^${i}-\\d+\\.json$`);
-
-    const amountStarters = fs
-      .readdirSync(startersDir)
-      .filter((name) => pattern.test(name))
-      .map((name) =>
-        JSON.parse(fs.readFileSync(path.join(startersDir, name), "utf8"))
-      );
-
-    if (i !== 2 && amountStarters.length === 0)
-      throw "previous starterfile not found: " + i;
-    amountStarters.forEach((starter) => previousStarters.push(starter));
-  }
-
-  return previousStarters;
 };
 
 const loadAllOptions = (amountOfZiehsen) => {
@@ -113,4 +91,4 @@ const getAllColumnPlays = (option, columnIndex) => {
   return allColumnPlays;
 };
 
-// getStarters(4, true);
+getStarters(5, true);

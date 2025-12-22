@@ -1,4 +1,13 @@
-export { getMatrixCopy, getColumnCopy, matricesAreEqual, printMatrices };
+export {
+  getMatrixCopy,
+  getColumnCopy,
+  matricesAreEqual,
+  printMatrices,
+  loadPreviousStarters,
+};
+
+import fs from "fs";
+import path from "path";
 
 const getMatrixCopy = (matrix) => {
   const size = matrix.length;
@@ -57,7 +66,7 @@ const printMatrices = (matrices) => {
     const cols = matrix[0].length;
 
     console.log("--" + "----".repeat(cols));
-    console.log(i + 1 + "\n");
+    console.log(i + 1 + " (" + matrix.length + ")" + "\n");
 
     for (let col = 0; col < cols; col++) {
       let line = [];
@@ -71,4 +80,31 @@ const printMatrices = (matrices) => {
 
     console.log("\n--" + "----".repeat(cols));
   });
+};
+
+const loadPreviousStarters = (amountOfZiehsen) => {
+  const previousStarters = [];
+  for (let i = 1; i < amountOfZiehsen; i++) {
+    const starters = loadStarters(i);
+    starters.forEach((starter) => previousStarters.push(starter));
+  }
+
+  return previousStarters;
+};
+
+const loadStarters = (amountOfZiehsen) => {
+  const startersDir = "./starters";
+  const pattern = new RegExp(`^${amountOfZiehsen}-\\d+\\.json$`);
+
+  const starters = fs
+    .readdirSync(startersDir)
+    .filter((name) => pattern.test(name))
+    .map((name) =>
+      JSON.parse(fs.readFileSync(path.join(startersDir, name), "utf8"))
+    );
+
+  if (amountOfZiehsen !== 2 && starters.length === 0)
+    throw "starterfile not found: " + amountOfZiehsen;
+
+  return starters;
 };
