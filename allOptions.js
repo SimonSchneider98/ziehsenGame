@@ -67,5 +67,3 @@ const addZiehseToMatrix = (matrix, columnNumber) => {
   newMatrix[columnNumber][index] = true;
   return newMatrix;
 };
-
-getAllOptions(6, true);

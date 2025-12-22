@@ -42,15 +42,30 @@ const loadAllOptions = (amountOfZiehsen) => {
 const calculateStarters = (allOptions, previousStarters) => {
   const starters = [];
   allOptions.forEach((option) => {
-    const plays = getAllPlays(option);
+    const opponentPlays = getAllPlays(option);
+    // a option is a starter if
+    // 1) opponent can NOT make a play to end up with a previous starter
+    // 2) cpu can ALWAYS follow up with a play ending at a previous starter
+
     if (
-      !previousStarters.some((starter) => {
-        // order starter, play is important because of the way matricesAreEqual is implemented
-        // the smaller matrix has to come first
-        const res = plays.some((play) => matricesAreEqual(play, starter));
-        return res;
+      opponentPlays.some((opponentPlay) =>
+        previousStarters.some((starter) =>
+          matricesAreEqual(opponentPlay, starter)
+        )
+      )
+    )
+      // return if opponent can make a play to end up with a previous starter
+      return;
+
+    if (
+      opponentPlays.every((opponentPlay) => {
+        const cpuPlays = getAllPlays(opponentPlay);
+        return cpuPlays.some((cpuPlay) =>
+          previousStarters.some((starter) => matricesAreEqual(starter, cpuPlay))
+        );
       })
     )
+      // add option as starter, if cpu can turn each opponent play into a previous starter
       starters.push(option);
   });
 
@@ -90,5 +105,3 @@ const getAllColumnPlays = (option, columnIndex) => {
 
   return allColumnPlays;
 };
-
-getStarters(5, true);

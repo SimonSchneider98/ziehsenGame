@@ -13,8 +13,8 @@ const exportAllStarters = (amountOfZiehsen) => {
   });
 };
 
-exportAllStarters(1);
-exportAllStarters(2);
+// exportAllStarters(1);
+// exportAllStarters(2);
 exportAllStarters(3);
 exportAllStarters(4);
 exportAllStarters(5);

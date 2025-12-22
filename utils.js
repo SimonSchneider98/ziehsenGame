@@ -34,15 +34,19 @@ const getColumnCopy = (column) => {
 };
 
 const matricesAreEqual = (m1, m2) => {
-  const m1Copy = getMatrixCopy(m1).filter((column) => column.includes(true));
-  const m2Copy = getMatrixCopy(m2).filter((column) => column.includes(true));
+  const longerMatrix = getMatrixCopy(m1.length > m2.length ? m1 : m2).filter(
+    (column) => column.includes(true)
+  );
+  const shorterMatrix = getMatrixCopy(m1.length > m2.length ? m2 : m1).filter(
+    (column) => column.includes(true)
+  );
 
-  for (let i = 0; i < m1Copy.length; i++) {
-    const equalColumnIndex = m2Copy.findIndex((m2Column) =>
-      columnsAreEqual(m1Copy[i], m2Column)
+  for (let i = 0; i < longerMatrix.length; i++) {
+    const equalColumnIndex = shorterMatrix.findIndex((m2Column) =>
+      columnsAreEqual(longerMatrix[i], m2Column)
     );
     if (equalColumnIndex === -1) return false;
-    m2Copy.splice(equalColumnIndex, 1);
+    shorterMatrix.splice(equalColumnIndex, 1);
   }
 
   return true;

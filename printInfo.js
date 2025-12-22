@@ -21,5 +21,5 @@ const printAllStarterDistributions = (amountOfZiehsen) => {
   );
 };
 
-printAllStarters(12);
-// printAllStarterDistributions(20);
+// printAllStarters(12);
+printAllStarterDistributions(20);
