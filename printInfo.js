@@ -1,4 +1,10 @@
-import { loadPreviousStarters, printMatrices } from "./utils.js";
+import { getAllOptions } from './allOptions.js';
+import { loadPreviousStarters, printMatrices } from './utils.js';
+
+const printAllOptions = (amountOfZiehsen) => {
+  const previousOptions = getAllOptions(amountOfZiehsen, true);
+  // printMatrices(previousOptions);
+};
 
 const printAllStarters = (amountOfZiehsen) => {
   const previousStarters = loadPreviousStarters(amountOfZiehsen + 1);
@@ -17,9 +23,10 @@ const printAllStarterDistributions = (amountOfZiehsen) => {
   console.log(
     Object.keys(distribution)
       .map((key) => `${key}: ${distribution[key]}`)
-      .join("\n")
+      .join('\n')
   );
 };
 
+printAllOptions(4);
 // printAllStarters(12);
-printAllStarterDistributions(20);
+// printAllStarterDistributions(20);

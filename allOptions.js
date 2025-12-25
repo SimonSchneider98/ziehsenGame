@@ -1,10 +1,10 @@
-import { getMatrixCopy, matricesAreEqual, printMatrices } from "./utils.js";
+import { getMatrixCopy, matricesAreEqual, printMatrices } from './utils.js';
 
 export { getAllOptions };
 
 const getAllOptions = (amountOfZiehsen, shouldPrintAllOptions = false) => {
   if (amountOfZiehsen === 0) {
-    console.log("du wicht!");
+    console.log('du wicht!');
     return;
   }
 
@@ -13,7 +13,7 @@ const getAllOptions = (amountOfZiehsen, shouldPrintAllOptions = false) => {
   const allOptions = calculateAllOptions(matrix, amountOfZiehsen);
   const end = new Date();
 
-  console.log("Processed in: " + (end - start) / 1000);
+  console.log('Processed in: ' + (end - start) / 1000);
   if (shouldPrintAllOptions) printMatrices(allOptions);
 
   return allOptions;
@@ -32,8 +32,6 @@ const getMatrix = (size) => {
 const calculateAllOptions = (matrix, ziehsenLeft, allSteps = []) => {
   const allOptions = [];
   if (ziehsenLeft === 0) return [matrix];
-
-  const addedOptions = [];
 
   for (let i = 0; i < matrix.length; i++) {
     const ziehseAddedMatrix = addZiehseToMatrix(matrix, i);

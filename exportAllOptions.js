@@ -1,12 +1,18 @@
-import { getAllOptions } from "./allOptions.js";
+import { getAllOptions } from './allOptions.js';
 
-import fs from "fs";
+import fs from 'fs';
+import path from 'path';
 
 const exportAllOptions = (amountOfZiehsen) => {
+  const dir = './allOptions';
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir);
+  }
+
   const allOptions = getAllOptions(amountOfZiehsen);
 
   fs.writeFileSync(
-    `./allOptions/${amountOfZiehsen}.json`,
+    path.join(dir, `${amountOfZiehsen}.json`),
     JSON.stringify(allOptions, null, 2)
   );
 };

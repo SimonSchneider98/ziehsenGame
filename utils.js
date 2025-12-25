@@ -6,8 +6,8 @@ export {
   loadPreviousStarters,
 };
 
-import fs from "fs";
-import path from "path";
+import fs from 'fs';
+import path, { normalize } from 'path';
 
 const getMatrixCopy = (matrix) => {
   const size = matrix.length;
@@ -34,19 +34,20 @@ const getColumnCopy = (column) => {
 };
 
 const matricesAreEqual = (m1, m2) => {
-  const longerMatrix = getMatrixCopy(m1.length > m2.length ? m1 : m2).filter(
-    (column) => column.includes(true)
-  );
-  const shorterMatrix = getMatrixCopy(m1.length > m2.length ? m2 : m1).filter(
-    (column) => column.includes(true)
-  );
+  const normalizedM1 = m1.filter((column) => column.includes(true));
+  const normalizedM2 = m2.filter((column) => column.includes(true));
 
-  for (let i = 0; i < longerMatrix.length; i++) {
-    const equalColumnIndex = shorterMatrix.findIndex((m2Column) =>
-      columnsAreEqual(longerMatrix[i], m2Column)
+  if (normalizedM1.length !== normalizedM2.length) return false;
+
+  const normalizedM1Copy = getMatrixCopy(normalizedM1);
+  const normalizedM2Copy = getMatrixCopy(normalizedM2);
+
+  for (let i = 0; i < normalizedM1Copy.length; i++) {
+    const equalColumnIndex = normalizedM2Copy.findIndex((m2Column) =>
+      columnsAreEqual(normalizedM1Copy[i], m2Column)
     );
     if (equalColumnIndex === -1) return false;
-    shorterMatrix.splice(equalColumnIndex, 1);
+    normalizedM2Copy.splice(equalColumnIndex, 1);
   }
 
   return true;
@@ -63,14 +64,14 @@ const columnsAreEqual = (c1, c2) => {
 };
 
 const printMatrices = (matrices) => {
-  console.log("Count:", matrices.length);
+  console.log('Count:', matrices.length);
 
   matrices.forEach((matrix, i) => {
     const rows = matrix.length;
     const cols = matrix[0].length;
 
-    console.log("--" + "----".repeat(cols));
-    console.log(i + 1 + " (" + matrix.length + ")" + "\n");
+    console.log('--' + '----'.repeat(cols));
+    console.log(i + 1 + ' (' + matrix.length + ')' + '\n');
 
     for (let col = 0; col < cols; col++) {
       let line = [];
@@ -78,11 +79,11 @@ const printMatrices = (matrices) => {
         line.push(matrix[row][col]);
       }
       console.log(
-        "| " + line.map((cell) => (cell ? "x" : "-")).join(" | ") + " |"
+        '| ' + line.map((cell) => (cell ? 'x' : '-')).join(' | ') + ' |'
       );
     }
 
-    console.log("\n--" + "----".repeat(cols));
+    console.log('\n--' + '----'.repeat(cols));
   });
 };
 
@@ -97,18 +98,18 @@ const loadPreviousStarters = (amountOfZiehsen) => {
 };
 
 const loadStarters = (amountOfZiehsen) => {
-  const startersDir = "./starters";
+  const startersDir = './starters';
   const pattern = new RegExp(`^${amountOfZiehsen}-\\d+\\.json$`);
 
   const starters = fs
     .readdirSync(startersDir)
     .filter((name) => pattern.test(name))
     .map((name) =>
-      JSON.parse(fs.readFileSync(path.join(startersDir, name), "utf8"))
+      JSON.parse(fs.readFileSync(path.join(startersDir, name), 'utf8'))
     );
 
   if (amountOfZiehsen !== 2 && starters.length === 0)
-    throw "starterfile not found: " + amountOfZiehsen;
+    throw 'starterfile not found: ' + amountOfZiehsen;
 
   return starters;
 };

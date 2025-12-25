@@ -1,20 +1,23 @@
-import { getStarters } from "./calculateStarters.js";
+import { getStarters } from './calculateStarters.js';
 
-import fs from "fs";
+import fs from 'fs';
 
 const exportAllStarters = (amountOfZiehsen) => {
+  const dir = './starters';
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+
   const starters = getStarters(amountOfZiehsen);
 
   starters.forEach((starter, i) => {
     fs.writeFileSync(
-      `./starters/${amountOfZiehsen}-${i + 1}.json`,
+      `${dir}/${amountOfZiehsen}-${i + 1}.json`,
       JSON.stringify(starter, null, 2)
     );
   });
 };
 
-// exportAllStarters(1);
-// exportAllStarters(2);
+exportAllStarters(1);
+exportAllStarters(2);
 exportAllStarters(3);
 exportAllStarters(4);
 exportAllStarters(5);
