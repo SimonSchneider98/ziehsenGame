@@ -7,15 +7,14 @@ export {
 };
 
 import fs from 'fs';
-import path, { normalize } from 'path';
+import path from 'path';
 
 const getMatrixCopy = (matrix) => {
-  const size = matrix.length;
   const copy = [];
 
-  for (let i = 0; i < size; i++) {
+  for (let i = 0; i < matrix.length; i++) {
     let column = [];
-    for (let j = 0; j < size; j++) column.push(matrix[i][j]);
+    for (let j = 0; j < matrix[i].length; j++) column.push(matrix[i][j]);
     copy.push(column);
   }
 

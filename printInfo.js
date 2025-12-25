@@ -27,6 +27,6 @@ const printAllStarterDistributions = (amountOfZiehsen) => {
   );
 };
 
-printAllOptions(4);
+printAllOptions(3);
 // printAllStarters(12);
 // printAllStarterDistributions(20);
