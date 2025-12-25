@@ -1,4 +1,4 @@
-import { getAllOptions } from './allOptions.js';
+import { getAllOptions } from './calculateAllOptions.js';
 import { loadPreviousStarters, printMatrices } from './utils.js';
 
 const printAllOptions = (amountOfZiehsen) => {

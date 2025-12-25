@@ -1,4 +1,4 @@
-import { getAllOptions } from './allOptions.js';
+import { getAllOptions } from './calculateAllOptions.js';
 
 import fs from 'fs';
 import path from 'path';
