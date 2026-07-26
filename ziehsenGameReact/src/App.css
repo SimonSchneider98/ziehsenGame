@@ -385,8 +385,35 @@ textarea {
 }
 
 .game-board .board {
+  flex: 0 0 auto;
   width: min(100cqw, 100cqh);
   height: min(100cqw, 100cqh);
+}
+
+/* Vertical stack: board on top, trash-selector row directly below. Kept as an
+   inner wrapper so the board element's own flex layout is untouched. */
+.game-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.35rem, 2cqh, 1rem);
+  width: 100%;
+  height: 100%;
+}
+
+/* Trash row: same board layout as the game board, but auto height (one tile)
+   and tiles sized off the shared width so they align with the board columns. */
+.game-board .trash-board {
+  width: min(100cqw, 100cqh);
+  height: auto;
+  flex: 0 0 auto;
+}
+
+.game-board .trash-board .tile {
+  width: calc(min(100cqw, 100cqh) / var(--board-fit-divisor, 1));
+  height: auto;
+  flex: 0 0 auto;
 }
 
 .game-footer {

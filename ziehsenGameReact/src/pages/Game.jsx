@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Board from "../components/Board";
+import TrashRow from "../components/TrashRow";
 import { getLayout, layouts } from "../layouts";
 import { loadConfig } from "../gameConfig";
 
@@ -167,6 +168,13 @@ function Game() {
     });
   }
 
+  function handleTrashClick(columnIndex) {
+    if (!isHumanTurn) return;
+    const active = activeIndices(matrix[columnIndex], removed[columnIndex]);
+    if (active.length === 0) return;
+    setSelection({ column: columnIndex, count: active.length });
+  }
+
   function handleTileClick(columnIndex, tileIndex) {
     if (!isHumanTurn || !selection || selection.column !== columnIndex)
       return false;
@@ -254,13 +262,19 @@ function Game() {
       </header>
 
       <div className="game-board">
-        <Board
-          matrix={matrix}
-          removed={removed}
-          selected={selected}
-          onColumnClick={isHumanTurn ? handleColumnClick : undefined}
-          onTileClick={isHumanTurn ? handleTileClick : undefined}
-        />
+        <div className="game-stack">
+          <Board
+            matrix={matrix}
+            removed={removed}
+            selected={selected}
+            onColumnClick={isHumanTurn ? handleColumnClick : undefined}
+            onTileClick={isHumanTurn ? handleTileClick : undefined}
+          />
+          <TrashRow
+            matrix={matrix}
+            onColumnClick={isHumanTurn ? handleTrashClick : undefined}
+          />
+        </div>
       </div>
 
       <footer className="game-footer">
