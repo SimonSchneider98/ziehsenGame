@@ -30,6 +30,58 @@ function countActive(matrix, removed) {
   return total
 }
 
+function pickRandomLegalMove(heaps) {
+  const heap = heaps[randomInt(heaps.length)]
+  return {
+    column: heap.column,
+    count: randomInt(heap.size) + 1,
+  }
+}
+
+function pickPerfectMisereMove(matrix, removed) {
+  const heaps = matrix
+    .map((column, c) => ({
+      column: c,
+      size: activeIndices(column, removed[c]).length,
+    }))
+    .filter((heap) => heap.size > 0)
+
+  if (heaps.length === 0) return null
+
+  const heapsOverOne = heaps.filter((heap) => heap.size > 1)
+  const heapsOfOne = heaps.length - heapsOverOne.length
+
+  // Special misere phase: at most one heap larger than 1.
+  // Choose whether to clear that heap or reduce it to 1 so the opponent
+  // receives an odd number of 1-heaps.
+  if (heapsOverOne.length <= 1) {
+    if (heapsOverOne.length === 0) {
+      // All heaps are size 1. Best play removes exactly one.
+      return { column: heaps[0].column, count: 1 }
+    }
+
+    const bigHeap = heapsOverOne[0]
+    const targetSize = heapsOfOne % 2 === 0 ? 1 : 0
+    const count = bigHeap.size - targetSize
+    return { column: bigHeap.column, count }
+  }
+
+  // Normal Nim phase: move to nim-sum 0.
+  const nimSum = heaps.reduce((acc, heap) => acc ^ heap.size, 0)
+  if (nimSum !== 0) {
+    for (let i = 0; i < heaps.length; i += 1) {
+      const heap = heaps[i]
+      const targetSize = heap.size ^ nimSum
+      if (targetSize < heap.size) {
+        return { column: heap.column, count: heap.size - targetSize }
+      }
+    }
+  }
+
+  // Losing position (nim-sum 0): no winning move exists, so randomize.
+  return pickRandomLegalMove(heaps)
+}
+
 function Game() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -147,19 +199,17 @@ function Game() {
     setResult(null)
   }
 
-  // CPU turn: after a short pause, play a random legal move.
+  // CPU turn: after a short pause, play optimal misere Nim.
   useEffect(() => {
     if (result || currentId !== 'cpu') return
     const timer = setTimeout(() => {
-      const columns = matrix
-        .map((column, c) => ({ c, active: activeIndices(column, removed[c]) }))
-        .filter((entry) => entry.active.length > 0)
-      if (columns.length === 0) return
-      const pick = columns[randomInt(columns.length)]
-      const count = randomInt(pick.active.length) + 1
-      const toRemove = new Set(pick.active.slice(0, count))
+      const move = pickPerfectMisereMove(matrix, removed)
+      if (!move) return
+
+      const active = activeIndices(matrix[move.column], removed[move.column])
+      const toRemove = new Set(active.slice(0, move.count))
       const nextRemoved = removed.map((column, c) =>
-        c === pick.c ? column.map((value, i) => value || toRemove.has(i)) : column,
+        c === move.column ? column.map((value, i) => value || toRemove.has(i)) : column,
       )
       finishTurn(nextRemoved, currentIndex)
     }, 700)
@@ -167,7 +217,7 @@ function Game() {
   }, [currentId, currentIndex, matrix, removed, result, finishTurn])
 
   function turnLabel() {
-    if (isVsCpu) return currentId === 'player' ? 'Your turn' : "Computer's turn"
+    if (isVsCpu) return currentId === 'player' ? 'Your turn' : "Harald's turn"
     return currentId === 'p1' ? "Player 1's turn" : "Player 2's turn"
   }
 

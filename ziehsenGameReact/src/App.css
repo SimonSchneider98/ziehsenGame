@@ -269,20 +269,21 @@ textarea {
   overflow: hidden;
 }
 
-.carousel-board .board {
+.board {
   gap: 0;
   align-items: flex-end;
   justify-content: space-evenly;
 }
 
-.carousel-board .board-column {
+.board-column {
   flex: 0 0 auto;
   height: 100%;
   gap: 0;
   justify-content: space-evenly;
 }
 
-.carousel-board .tile {
+.carousel-board .tile,
+.game-board .tile {
   width: auto;
   height: calc(100% / var(--board-fit-divisor, 1));
   flex: 0 0 auto;
@@ -386,22 +387,6 @@ textarea {
 .game-board .board {
   width: min(100cqw, 100cqh);
   height: min(100cqw, 100cqh);
-  gap: 0;
-  align-items: flex-end;
-  justify-content: space-evenly;
-}
-
-.game-board .board-column {
-  flex: 0 0 auto;
-  height: 100%;
-  gap: 0;
-  justify-content: space-evenly;
-}
-
-.game-board .tile {
-  width: auto;
-  height: calc(100% / var(--board-fit-divisor, 1));
-  flex: 0 0 auto;
 }
 
 .game-footer {

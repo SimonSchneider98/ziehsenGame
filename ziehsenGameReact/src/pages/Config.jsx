@@ -53,7 +53,7 @@ function Config() {
             className={config.mode === 'cpu' ? 'chip chip--active' : 'chip'}
             onClick={() => update({ mode: 'cpu' })}
           >
-            Vs. Computer
+            Harald
           </button>
           <button
             className={config.mode === 'local' ? 'chip chip--active' : 'chip'}
@@ -82,7 +82,7 @@ function Config() {
               }
               onClick={() => update({ starter: 'cpu' })}
             >
-              Computer
+              Harald
             </button>
           </div>
         </section>
