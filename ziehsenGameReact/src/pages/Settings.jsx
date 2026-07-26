@@ -1,18 +1,18 @@
-import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { loadSettings, saveSettings } from '../settings'
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { loadSettings, saveSettings } from "../settings";
 
 function Settings() {
-  const navigate = useNavigate()
-  const [settings, setSettings] = useState(loadSettings)
+  const navigate = useNavigate();
+  const [settings, setSettings] = useState(loadSettings);
 
   // Persist on every change so the setting survives a refresh.
   useEffect(() => {
-    saveSettings(settings)
-  }, [settings])
+    saveSettings(settings);
+  }, [settings]);
 
   function toggle(key) {
-    setSettings((previous) => ({ ...previous, [key]: !previous[key] }))
+    setSettings((previous) => ({ ...previous, [key]: !previous[key] }));
   }
 
   return (
@@ -21,7 +21,7 @@ function Settings() {
         <button
           className="icon-button"
           aria-label="Back"
-          onClick={() => navigate('/')}
+          onClick={() => navigate("/")}
         >
           ←
         </button>
@@ -35,12 +35,12 @@ function Settings() {
             type="checkbox"
             className="switch"
             checked={settings.muted}
-            onChange={() => toggle('muted')}
+            onChange={() => toggle("muted")}
           />
         </label>
       </section>
     </div>
-  )
+  );
 }
 
-export default Settings
+export default Settings;

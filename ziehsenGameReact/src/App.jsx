@@ -1,9 +1,9 @@
-import { Routes, Route } from 'react-router-dom'
-import Landing from './pages/Landing'
-import Settings from './pages/Settings'
-import Config from './pages/Config'
-import Game from './pages/Game'
-import './App.css'
+import { Routes, Route } from "react-router-dom";
+import Landing from "./pages/Landing";
+import Settings from "./pages/Settings";
+import Config from "./pages/Config";
+import Game from "./pages/Game";
+import "./App.css";
 
 function App() {
   return (
@@ -13,7 +13,7 @@ function App() {
       <Route path="/config" element={<Config />} />
       <Route path="/game" element={<Game />} />
     </Routes>
-  )
+  );
 }
 
-export default App
+export default App;

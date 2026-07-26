@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo } from "react";
 
 // Reusable board renderer. Displays the layout matrix as columns of tiles.
 // The matrix is an array of columns; each column is an array of booleans
@@ -10,14 +10,8 @@ import { useMemo } from 'react'
 // - selected: 2D boolean array, `true` where a tile is selected this turn
 // - onColumnClick(columnIndex): makes each column tappable
 // - onTileClick(columnIndex, tileIndex): tile-level click handling
-function Board({
-  matrix,
-  removed,
-  selected,
-  onColumnClick,
-  onTileClick,
-}) {
-  const interactive = Boolean(onColumnClick)
+function Board({ matrix, removed, selected, onColumnClick, onTileClick }) {
+  const interactive = Boolean(onColumnClick);
 
   const columns = useMemo(
     () =>
@@ -25,9 +19,9 @@ function Board({
         .map((column, columnIndex) => ({ column, columnIndex }))
         .filter(({ column }) => column.some(Boolean)),
     [matrix],
-  )
+  );
 
-  const boardColumns = columns.length
+  const boardColumns = columns.length;
   const boardMaxStack = useMemo(
     () =>
       columns.reduce(
@@ -39,51 +33,51 @@ function Board({
         0,
       ),
     [columns],
-  )
-  const boardFitDivisor = Math.max(1, boardColumns, boardMaxStack)
+  );
+  const boardFitDivisor = Math.max(1, boardColumns, boardMaxStack);
 
   return (
     <div
       className="board"
       style={{
-        '--board-columns': boardColumns,
-        '--board-max-stack': boardMaxStack,
-        '--board-fit-divisor': boardFitDivisor,
+        "--board-columns": boardColumns,
+        "--board-max-stack": boardMaxStack,
+        "--board-fit-divisor": boardFitDivisor,
       }}
     >
       {columns.map(({ column, columnIndex }) => (
         <div
           className={
             interactive
-              ? 'board-column board-column--interactive'
-              : 'board-column'
+              ? "board-column board-column--interactive"
+              : "board-column"
           }
           key={columnIndex}
-          role={interactive ? 'button' : undefined}
+          role={interactive ? "button" : undefined}
           tabIndex={interactive ? 0 : undefined}
           onClick={interactive ? () => onColumnClick(columnIndex) : undefined}
           onKeyDown={
             interactive
               ? (event) => {
-                  if (event.key === 'Enter' || event.key === ' ') {
-                    event.preventDefault()
-                    onColumnClick(columnIndex)
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    onColumnClick(columnIndex);
                   }
                 }
               : undefined
           }
         >
           {column.map((exists, tileIndex) => {
-            if (!exists) return null
-            const isRemoved = removed?.[columnIndex]?.[tileIndex]
-            const isSelected = selected?.[columnIndex]?.[tileIndex]
+            if (!exists) return null;
+            const isRemoved = removed?.[columnIndex]?.[tileIndex];
+            const isSelected = selected?.[columnIndex]?.[tileIndex];
             const className = [
-              'tile',
-              isRemoved && 'tile--removed',
-              isSelected && 'tile--selected',
+              "tile",
+              isRemoved && "tile--removed",
+              isSelected && "tile--selected",
             ]
               .filter(Boolean)
-              .join(' ')
+              .join(" ");
             return (
               <div
                 className={className}
@@ -91,9 +85,9 @@ function Board({
                 onClick={
                   onTileClick
                     ? (event) => {
-                        const handled = onTileClick(columnIndex, tileIndex)
+                        const handled = onTileClick(columnIndex, tileIndex);
                         if (handled) {
-                          event.stopPropagation()
+                          event.stopPropagation();
                         }
                       }
                     : undefined
@@ -101,12 +95,12 @@ function Board({
               >
                 <div className="tile-fill">🚬</div>
               </div>
-            )
+            );
           })}
         </div>
       ))}
     </div>
-  )
+  );
 }
 
-export default Board
+export default Board;
