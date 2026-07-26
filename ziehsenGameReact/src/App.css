@@ -94,6 +94,10 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: center;
+  /* Fallback for browsers without container-query units (older Android
+     browsers): a viewport-based size so the emoji is never sized to 0 and
+     the board never looks empty. Modern browsers use the cq* line below. */
+  font-size: clamp(0.75rem, 8vmin, 3rem);
   font-size: min(70cqw, 70cqh);
   line-height: 1;
 }
@@ -386,6 +390,9 @@ textarea {
 
 .game-board .board {
   flex: 0 0 auto;
+  /* Fallback (no container-query units): a square sized off the viewport. */
+  width: min(100%, 80vmin);
+  height: min(100%, 80vmin);
   width: min(100cqw, 100cqh);
   height: min(100cqw, 100cqh);
 }
@@ -405,12 +412,14 @@ textarea {
 /* Trash row: same board layout as the game board, but auto height (one tile)
    and tiles sized off the shared width so they align with the board columns. */
 .game-board .trash-board {
+  width: min(100%, 80vmin);
   width: min(100cqw, 100cqh);
   height: auto;
   flex: 0 0 auto;
 }
 
 .game-board .trash-board .tile {
+  width: calc(min(100%, 80vmin) / var(--board-fit-divisor, 1));
   width: calc(min(100cqw, 100cqh) / var(--board-fit-divisor, 1));
   height: auto;
   flex: 0 0 auto;
