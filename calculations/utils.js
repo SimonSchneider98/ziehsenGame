@@ -4,10 +4,11 @@ export {
   matricesAreEqual,
   printMatrices,
   loadPreviousStarters,
+  loadStartersFromDir,
 };
 
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
 const getMatrixCopy = (matrix) => {
   const copy = [];
@@ -43,7 +44,7 @@ const matricesAreEqual = (m1, m2) => {
 
   for (let i = 0; i < normalizedM1Copy.length; i++) {
     const equalColumnIndex = normalizedM2Copy.findIndex((m2Column) =>
-      columnsAreEqual(normalizedM1Copy[i], m2Column)
+      columnsAreEqual(normalizedM1Copy[i], m2Column),
     );
     if (equalColumnIndex === -1) return false;
     normalizedM2Copy.splice(equalColumnIndex, 1);
@@ -63,26 +64,38 @@ const columnsAreEqual = (c1, c2) => {
 };
 
 const printMatrices = (matrices) => {
-  console.log('Count:', matrices.length);
+  console.log("Count:", matrices.length);
+
+  const ziehsenFileCounts = {};
 
   matrices.forEach((matrix, i) => {
-    const rows = matrix.length;
-    const cols = matrix[0].length;
+    const ziehsen = matrix.length;
+    ziehsenFileCounts[ziehsen] = (ziehsenFileCounts[ziehsen] || 0) + 1;
 
-    console.log('--' + '----'.repeat(cols));
-    console.log(i + 1 + ' (' + matrix.length + ')' + '\n');
-
-    for (let col = 0; col < cols; col++) {
-      let line = [];
-      for (let row = 0; row < rows; row++) {
-        line.push(matrix[row][col]);
+    const nonEmptyColumns = matrix.filter((column) => column.includes(true));
+    const rowCount = matrix[0].length;
+    const nonEmptyRowIndices = [];
+    for (let row = 0; row < rowCount; row++) {
+      if (nonEmptyColumns.some((column) => column[row])) {
+        nonEmptyRowIndices.push(row);
       }
-      console.log(
-        '| ' + line.map((cell) => (cell ? 'x' : '-')).join(' | ') + ' |'
-      );
     }
 
-    console.log('\n--' + '----'.repeat(cols));
+    const cols = nonEmptyColumns.length;
+
+    console.log("--" + "----".repeat(cols));
+    console.log(
+      i + 1 + " (" + ziehsen + " #" + ziehsenFileCounts[ziehsen] + ")" + "\n",
+    );
+
+    nonEmptyRowIndices.forEach((row) => {
+      const line = nonEmptyColumns.map((column) => column[row]);
+      console.log(
+        "| " + line.map((cell) => (cell ? "x" : "-")).join(" | ") + " |",
+      );
+    });
+
+    console.log("\n--" + "----".repeat(cols));
   });
 };
 
@@ -96,19 +109,35 @@ const loadPreviousStarters = (amountOfZiehsen) => {
   return previousStarters;
 };
 
+const loadStartersFromDir = (startersDir) => {
+  const pattern = /^(\d+)-(\d+)\.json$/;
+
+  return fs
+    .readdirSync(startersDir)
+    .filter((name) => pattern.test(name))
+    .sort((a, b) => {
+      const [, ziehsenA, indexA] = a.match(pattern).map(Number);
+      const [, ziehsenB, indexB] = b.match(pattern).map(Number);
+      return ziehsenA - ziehsenB || indexA - indexB;
+    })
+    .map((name) =>
+      JSON.parse(fs.readFileSync(path.join(startersDir, name), "utf8")),
+    );
+};
+
 const loadStarters = (amountOfZiehsen) => {
-  const startersDir = './starters';
+  const startersDir = "./starters";
   const pattern = new RegExp(`^${amountOfZiehsen}-\\d+\\.json$`);
 
   const starters = fs
     .readdirSync(startersDir)
     .filter((name) => pattern.test(name))
     .map((name) =>
-      JSON.parse(fs.readFileSync(path.join(startersDir, name), 'utf8'))
+      JSON.parse(fs.readFileSync(path.join(startersDir, name), "utf8")),
     );
 
   if (amountOfZiehsen !== 2 && starters.length === 0)
-    throw 'starterfile not found: ' + amountOfZiehsen;
+    throw "starterfile not found: " + amountOfZiehsen;
 
   return starters;
 };

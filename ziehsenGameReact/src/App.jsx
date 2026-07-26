@@ -1,16 +1,18 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import { Routes, Route } from 'react-router-dom'
+import Landing from './pages/Landing'
+import Settings from './pages/Settings'
+import Config from './pages/Config'
+import Game from './pages/Game'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <div>
-      hello deployed world
-    </div>
+    <Routes>
+      <Route path="/" element={<Landing />} />
+      <Route path="/settings" element={<Settings />} />
+      <Route path="/config" element={<Config />} />
+      <Route path="/game" element={<Game />} />
+    </Routes>
   )
 }
 
