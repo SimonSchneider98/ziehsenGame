@@ -43,8 +43,7 @@ Always `cd ziehsenGameReact` first — running npm at the repo root creates stra
   hit areas. Ensure controls work with both touch and mouse.
 - Use fluid/responsive units (%, rem, vw/vh, clamp) over fixed pixel widths so the board and
   UI scale across screen sizes.
-- **UI text is in German** unless explicitly stated otherwise. Code (identifiers, comments,
-  commit messages) stays in English.
+- **UI text is in English.**
 
 ## Deployment
 

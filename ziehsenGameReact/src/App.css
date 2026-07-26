@@ -1,3 +1,26 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap");
+
+:root {
+  --app-font-size: 16px;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+  font-family: "Plus Jakarta Sans", "Avenir Next", "Nunito Sans", sans-serif;
+  font-size: var(--app-font-size);
+  line-height: 1.45;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
 .page {
   display: flex;
   flex-direction: column;
@@ -6,6 +29,7 @@
   gap: 1rem;
   min-height: 100vh;
   text-align: center;
+  user-select: none;
 }
 
 .menu {
@@ -27,4 +51,436 @@
   font-size: 1.5rem;
   background: none;
   border: none;
+}
+
+/* Reusable board (used by the Config carousel and the Game page). */
+.board {
+  display: flex;
+  gap: clamp(0.25rem, 1vw, 0.7rem);
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.board-column {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.15rem, 0.7vw, 0.4rem);
+}
+
+.board-column--interactive {
+  cursor: pointer;
+}
+
+.tile {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  padding: clamp(0.1rem, 0.5vw, 0.2rem);
+  box-sizing: border-box;
+  border-radius: 0.25rem;
+  container-type: size;
+}
+
+.tile-fill {
+  width: 100%;
+  height: 100%;
+  border-radius: 0.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: min(70cqw, 70cqh);
+  line-height: 1;
+}
+
+.tile--selected {
+  outline: 2px solid #646cff;
+  outline-offset: -2px;
+  background: rgba(100, 108, 255, 0.25);
+}
+
+.tile--removed {
+  opacity: 0.25;
+}
+
+/* Config page: a scrollable, top-aligned form (mobile-first). */
+.page.config {
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: 1.25rem;
+  min-height: 100vh;
+  padding: 1rem;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.config-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.config-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.config-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.config-section h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+/* Settings: a labelled row with a toggle switch. */
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 2.75rem;
+  font-size: 1.05rem;
+  cursor: pointer;
+}
+
+.switch {
+  appearance: none;
+  flex: 0 0 auto;
+  width: 3rem;
+  height: 1.75rem;
+  border-radius: 1rem;
+  background: #555;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.switch::before {
+  content: "";
+  position: absolute;
+  top: 0.2rem;
+  left: 0.2rem;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.15s ease;
+}
+
+.switch:checked {
+  background: #646cff;
+}
+
+.switch:checked::before {
+  transform: translateX(1.25rem);
+}
+
+.option-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chip {
+  flex: 1 1 auto;
+  min-height: 2.75rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: 1px solid currentColor;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.chip--active {
+  background: #646cff;
+  border-color: #646cff;
+  color: #fff;
+}
+
+.icon-button {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  font-size: 1.5rem;
+  line-height: 1;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.carousel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.carousel > .icon-button {
+  flex: 0 0 clamp(2.75rem, 8vw, 3.5rem);
+  width: clamp(2.75rem, 8vw, 3.5rem);
+  min-width: 0;
+  min-height: clamp(2.75rem, 8vw, 3.5rem);
+  padding: 0;
+  border: 1px solid currentColor;
+  border-radius: 0.75rem;
+  display: grid;
+  place-items: center;
+  font-size: clamp(1.35rem, 3.8vw, 1.9rem);
+}
+
+.selected-board-info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.carousel-item {
+  position: relative;
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  min-height: 0;
+  padding: 0.75rem;
+  border: 1px solid currentColor;
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.carousel-board {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.carousel-board .board {
+  gap: 0;
+  align-items: flex-end;
+  justify-content: space-evenly;
+}
+
+.carousel-board .board-column {
+  flex: 0 0 auto;
+  height: 100%;
+  gap: 0;
+  justify-content: space-evenly;
+}
+
+.carousel-board .tile {
+  width: auto;
+  height: calc(100% / var(--board-fit-divisor, 1));
+  flex: 0 0 auto;
+}
+
+.carousel-number {
+  font-weight: 700;
+}
+
+.carousel-name,
+.carousel-count {
+  opacity: 0.85;
+}
+
+.config-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: auto;
+}
+
+.config-footer .primary,
+.config-footer .secondary {
+  min-height: 3rem;
+  font-size: 1.05rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.config-footer .primary {
+  background: #646cff;
+  border: none;
+  color: #fff;
+}
+
+.config-footer .secondary {
+  background: transparent;
+  border: 1px solid currentColor;
+  color: inherit;
+}
+
+/* Larger screens: constrain width and center the form. */
+@media (min-width: 600px) {
+  .page.config {
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .config-footer {
+    flex-direction: row;
+  }
+
+  .config-footer .primary {
+    flex: 2 1 0;
+  }
+
+  .config-footer .secondary {
+    flex: 1 1 0;
+  }
+}
+
+/* Game page (mobile-first). */
+.page.game {
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: 1rem;
+  min-height: 100vh;
+  padding: 1rem;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.game-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.game-turn {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.game-board {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  container-type: size;
+  width: 100%;
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 0 0.5rem;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.game-board .board {
+  width: min(100cqw, 100cqh);
+  height: min(100cqw, 100cqh);
+  gap: 0;
+  align-items: flex-end;
+  justify-content: space-evenly;
+}
+
+.game-board .board-column {
+  flex: 0 0 auto;
+  height: 100%;
+  gap: 0;
+  justify-content: space-evenly;
+}
+
+.game-board .tile {
+  width: auto;
+  height: calc(100% / var(--board-fit-divisor, 1));
+  flex: 0 0 auto;
+}
+
+.game-footer {
+  display: flex;
+  flex-direction: column;
+}
+
+.game-footer .primary {
+  min-height: 3rem;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: #646cff;
+  color: #fff;
+  cursor: pointer;
+}
+
+.game-footer .primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.game-over {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.game-over-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  align-items: stretch;
+  width: 100%;
+  max-width: 20rem;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  background: #1a1a1a;
+  text-align: center;
+}
+
+.game-over-card h2 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.game-over-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.game-over-actions .primary,
+.game-over-actions .secondary {
+  min-height: 3rem;
+  font-size: 1.05rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.game-over-actions .primary {
+  border: none;
+  background: #646cff;
+  color: #fff;
+}
+
+.game-over-actions .secondary {
+  background: transparent;
+  border: 1px solid currentColor;
+  color: inherit;
+}
+
+@media (min-width: 600px) {
+  .game-footer .primary {
+    align-self: center;
+    min-width: 16rem;
+  }
 }

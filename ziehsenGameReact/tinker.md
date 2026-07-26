@@ -96,8 +96,8 @@ Shown when the game ends. Content depends on the mode:
 
 Actions:
 
-- **Neustart** (restart): start a new game with the same config.
-- **Menü** (menu): navigate back to the Landing page (`/`).
+- **Restart**: start a new game with the same config.
+- **Menu**: navigate back to the Landing page (`/`).
 
 ## CPU
 
