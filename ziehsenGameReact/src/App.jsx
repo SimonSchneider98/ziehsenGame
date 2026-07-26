@@ -9,7 +9,7 @@ function App() {
 
   return (
     <div>
-      hello world
+      hello deployed world
     </div>
   )
 }
