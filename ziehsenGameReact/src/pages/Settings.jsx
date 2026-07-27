@@ -25,7 +25,9 @@ function Settings() {
         >
           ‹
         </button>
-        <h1>Settings</h1>
+        <span className="page-header-text">
+          <span className="page-header-text-inner">Settings</span>
+        </span>
       </header>
       <div className="page-content">
         <section className="config-section">

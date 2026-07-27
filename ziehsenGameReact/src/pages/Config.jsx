@@ -43,7 +43,9 @@ function Config() {
         >
           ‹
         </button>
-        <h1>Custom Game</h1>
+        <span className="page-header-text">
+          <span className="page-header-text-inner">Custom Game</span>
+        </span>
       </header>
       <div className="page-content">
         <section className="config-section">
