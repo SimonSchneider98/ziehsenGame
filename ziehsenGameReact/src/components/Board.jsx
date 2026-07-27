@@ -93,7 +93,7 @@ function Board({ matrix, removed, selected, onColumnClick, onTileClick }) {
                     : undefined
                 }
               >
-                <div className="tile-fill">🚬</div>
+                <div className="tile-fill"></div>
               </div>
             );
           })}

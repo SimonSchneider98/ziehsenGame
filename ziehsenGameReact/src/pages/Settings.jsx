@@ -16,8 +16,8 @@ function Settings() {
   }
 
   return (
-    <div className="page config">
-      <header className="config-header">
+    <div className="page settings">
+      <header className="page-header">
         <button
           className="icon-button"
           aria-label="Back"
@@ -27,18 +27,19 @@ function Settings() {
         </button>
         <h1>Settings</h1>
       </header>
-
-      <section className="config-section">
-        <label className="setting-row">
-          <span>Mute all sound</span>
-          <input
-            type="checkbox"
-            className="switch"
-            checked={settings.muted}
-            onChange={() => toggle("muted")}
-          />
-        </label>
-      </section>
+      <div className="page-content">
+        <section className="config-section">
+          <label className="setting-row">
+            <span>Mute all sound</span>
+            <input
+              type="checkbox"
+              className="switch"
+              checked={settings.muted}
+              onChange={() => toggle("muted")}
+            />
+          </label>
+        </section>
+      </div>
     </div>
   );
 }

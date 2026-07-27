@@ -35,7 +35,7 @@ function Config() {
 
   return (
     <div className="page config">
-      <header className="config-header">
+      <header className="page-header">
         <button
           className="icon-button"
           aria-label="Back"
@@ -45,105 +45,102 @@ function Config() {
         </button>
         <h1>Custom Game</h1>
       </header>
-
-      <section className="config-section">
-        <h2>Mode</h2>
-        <div className="option-row">
-          <button
-            className={config.mode === "cpu" ? "chip chip--active" : "chip"}
-            onClick={() => update({ mode: "cpu" })}
-          >
-            Harald
-          </button>
-          <button
-            className={config.mode === "local" ? "chip chip--active" : "chip"}
-            onClick={() => update({ mode: "local" })}
-          >
-            2 Players
-          </button>
-        </div>
-      </section>
-
-      {config.mode === "cpu" && (
+      <div className="page-content">
         <section className="config-section">
-          <h2>Who starts?</h2>
+          <h2>Mode</h2>
           <div className="option-row">
             <button
-              className={
-                config.starter === "player" ? "chip chip--active" : "chip"
-              }
-              onClick={() => update({ starter: "player" })}
-            >
-              Player
-            </button>
-            <button
-              className={
-                config.starter === "cpu" ? "chip chip--active" : "chip"
-              }
-              onClick={() => update({ starter: "cpu" })}
+              className={config.mode === "cpu" ? "chip chip--active" : "chip"}
+              onClick={() => update({ mode: "cpu" })}
             >
               Harald
             </button>
+            <button
+              className={config.mode === "local" ? "chip chip--active" : "chip"}
+              onClick={() => update({ mode: "local" })}
+            >
+              2 Players
+            </button>
           </div>
         </section>
-      )}
-
-      <section className="config-section">
-        <h2>Board</h2>
-        <div className="option-row">
-          <button
-            className={
-              config.layoutMode === "random" ? "chip chip--active" : "chip"
-            }
-            onClick={() => update({ layoutMode: "random" })}
-          >
-            Random
-          </button>
-          <button
-            className={
-              config.layoutMode === "custom" ? "chip chip--active" : "chip"
-            }
-            onClick={() => update({ layoutMode: "custom" })}
-          >
-            Choose
-          </button>
-        </div>
-
-        {config.layoutMode === "custom" && currentLayout && (
-          <>
-            <div className="selected-board-info">
-              <span className="carousel-number">#{currentLayout.number}</span>
-              <span className="carousel-name">{currentLayout.file}</span>
-              <span className="carousel-count">
-                {currentLayout.ziehsen} Ziehsen
-              </span>
-            </div>
-            <div className="carousel">
+        {config.mode === "cpu" && (
+          <section className="config-section">
+            <h2>Who starts?</h2>
+            <div className="option-row">
               <button
-                className="icon-button"
-                aria-label="Previous board"
-                onClick={() => moveCarousel(-1)}
+                className={
+                  config.starter === "player" ? "chip chip--active" : "chip"
+                }
+                onClick={() => update({ starter: "player" })}
               >
-                ‹
+                Player
               </button>
-              <div className="carousel-item">
-                <div className="carousel-board">
-                  <Board matrix={currentLayout.matrix} />
-                </div>
-              </div>
               <button
-                className="icon-button"
-                aria-label="Next board"
-                onClick={() => moveCarousel(1)}
+                className={
+                  config.starter === "cpu" ? "chip chip--active" : "chip"
+                }
+                onClick={() => update({ starter: "cpu" })}
               >
-                ›
+                Harald
               </button>
             </div>
-          </>
+          </section>
         )}
-      </section>
-
-      <footer className="config-footer">
+        <section className="config-section">
+          <h2>Board</h2>
+          <div className="option-row">
+            <button
+              className={
+                config.layoutMode === "random" ? "chip chip--active" : "chip"
+              }
+              onClick={() => update({ layoutMode: "random" })}
+            >
+              Random
+            </button>
+            <button
+              className={
+                config.layoutMode === "custom" ? "chip chip--active" : "chip"
+              }
+              onClick={() => update({ layoutMode: "custom" })}
+            >
+              Choose
+            </button>
+          </div>
+          {config.layoutMode === "custom" && currentLayout && (
+            <>
+              <div className="selected-board-info">
+                <span className="carousel-number">#{currentLayout.number}</span>
+                <span className="carousel-name">{currentLayout.file}</span>
+                <span className="carousel-count">
+                  {currentLayout.ziehsen} Ziehsen
+                </span>
+              </div>
+              <div className="carousel">
+                <button
+                  className="icon-button"
+                  aria-label="Previous board"
+                  onClick={() => moveCarousel(-1)}
+                >
+                  ‹
+                </button>
+                <div className="carousel-item">
+                  <div className="carousel-board">
+                    <Board matrix={currentLayout.matrix} />
+                  </div>
+                </div>
+                <button
+                  className="icon-button"
+                  aria-label="Next board"
+                  onClick={() => moveCarousel(1)}
+                >
+                  ›
+                </button>
+              </div>
+            </>
+          )}
+        </section>
+      </div>
+      <footer className="page-footer">
         <button
           className="primary"
           onClick={() => navigate("/game", { state: { config } })}

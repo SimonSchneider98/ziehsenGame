@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Board from "../components/Board";
 import TrashRow from "../components/TrashRow";
@@ -120,6 +120,31 @@ function Game() {
 
   const currentId = players[currentIndex];
   const isHumanTurn = !result && currentId !== "cpu";
+
+  // Size the board as the largest square that fits its container. Container
+  // query units (cqw/cqh) aren't supported on older Android browsers, so we
+  // measure the container and expose the side length as a CSS variable.
+  const boardBoxRef = useRef(null);
+  useEffect(() => {
+    const element = boardBoxRef.current;
+    if (!element) return undefined;
+    const update = () => {
+      const style = getComputedStyle(element);
+      const padX =
+        parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+      const padY =
+        parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+      const side = Math.min(
+        element.clientWidth - padX,
+        element.clientHeight - padY,
+      );
+      element.style.setProperty("--board-size", `${Math.max(0, side)}px`);
+    };
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
 
   // Derive the selected tiles (top `count` active tiles of the chosen column).
   const selected = useMemo(() => {
@@ -247,7 +272,7 @@ function Game() {
 
   return (
     <div className="page game">
-      <header className="game-header">
+      <header className="page-header">
         <button
           className="icon-button"
           aria-label="Back"
@@ -261,8 +286,8 @@ function Game() {
         </button>
       </header>
 
-      <div className="game-board">
-        <div className="game-stack">
+      <div className="page-content">
+        <div className="game-board" ref={boardBoxRef}>
           <Board
             matrix={matrix}
             removed={removed}
@@ -270,14 +295,13 @@ function Game() {
             onColumnClick={isHumanTurn ? handleColumnClick : undefined}
             onTileClick={isHumanTurn ? handleTileClick : undefined}
           />
-          <TrashRow
+          {/* <TrashRow
             matrix={matrix}
             onColumnClick={isHumanTurn ? handleTrashClick : undefined}
-          />
+          /> */}
         </div>
       </div>
-
-      <footer className="game-footer">
+      <footer className="page-footer">
         <button
           className="primary"
           disabled={!selection || !isHumanTurn}
@@ -286,7 +310,6 @@ function Game() {
           Confirm
         </button>
       </footer>
-
       {result && (
         <div className="game-over">
           <div className="game-over-card">

@@ -27,9 +27,21 @@ textarea {
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
   text-align: center;
   user-select: none;
+}
+
+/* Shared page layout: header and footer stay pinned while the content wrapper
+   grows to fill the remaining space and scrolls when it overflows. */
+.page-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .menu {
@@ -39,11 +51,23 @@ textarea {
   gap: 0.75rem;
 }
 
+/* Landing: no header/footer, so center the content wrapper's children. */
+.landing .page-content {
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
 .menu button {
   min-width: 12rem;
   padding: 0.6rem 1.2rem;
   font-size: 1rem;
   cursor: pointer;
+}
+
+.menu .start-game-button {
+  height: 6rem;
+  font-size: 1.5rem;
 }
 
 .settings-gear {
@@ -60,7 +84,8 @@ textarea {
   align-items: flex-end;
   justify-content: center;
   width: 100%;
-  height: 100%;
+  aspect-ratio: 1 / 1;
+  max-height: 80%;
   min-height: 0;
 }
 
@@ -94,12 +119,7 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Fallback for browsers without container-query units (older Android
-     browsers): a viewport-based size so the emoji is never sized to 0 and
-     the board never looks empty. Modern browsers use the cq* line below. */
-  font-size: clamp(0.75rem, 8vmin, 3rem);
-  font-size: min(70cqw, 70cqh);
-  line-height: 1;
+  background: #3f583d;
 }
 
 .tile--selected {
@@ -117,21 +137,32 @@ textarea {
   justify-content: flex-start;
   align-items: stretch;
   gap: 1.25rem;
-  min-height: 100vh;
   padding: 1rem;
   text-align: left;
   box-sizing: border-box;
 }
 
-.config-header {
+/* Common header/footer shared by every page. Both stay pinned while the
+   .page-content wrapper between them grows and scrolls. */
+.page-header {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
-.config-header h1 {
+.page-header h1 {
   margin: 0;
   font-size: 1.5rem;
+}
+
+.page-footer {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Inside the scrolling content wrapper, space the form sections evenly. */
+.config .page-content {
+  gap: 1.25rem;
 }
 
 .config-section {
@@ -277,6 +308,7 @@ textarea {
   gap: 0;
   align-items: flex-end;
   justify-content: space-evenly;
+  background: lightgrey;
 }
 
 .board-column {
@@ -302,28 +334,26 @@ textarea {
   opacity: 0.85;
 }
 
-.config-footer {
-  display: flex;
-  flex-direction: column;
+.config .page-footer {
   gap: 0.6rem;
   margin-top: auto;
 }
 
-.config-footer .primary,
-.config-footer .secondary {
+.config .page-footer .primary,
+.config .page-footer .secondary {
   min-height: 3rem;
   font-size: 1.05rem;
   border-radius: 0.5rem;
   cursor: pointer;
 }
 
-.config-footer .primary {
+.config .page-footer .primary {
   background: #646cff;
   border: none;
   color: #fff;
 }
 
-.config-footer .secondary {
+.config .page-footer .secondary {
   background: transparent;
   border: 1px solid currentColor;
   color: inherit;
@@ -337,15 +367,15 @@ textarea {
     padding: 2rem;
   }
 
-  .config-footer {
+  .config .page-footer {
     flex-direction: row;
   }
 
-  .config-footer .primary {
+  .config .page-footer .primary {
     flex: 2 1 0;
   }
 
-  .config-footer .secondary {
+  .config .page-footer .secondary {
     flex: 1 1 0;
   }
 }
@@ -355,15 +385,11 @@ textarea {
   justify-content: flex-start;
   align-items: stretch;
   gap: 1rem;
-  min-height: 100vh;
   padding: 1rem;
   box-sizing: border-box;
-  overflow: hidden;
 }
 
-.game-header {
-  display: flex;
-  align-items: center;
+.game .page-header {
   justify-content: space-between;
   gap: 0.5rem;
 }
@@ -373,13 +399,14 @@ textarea {
   font-weight: 600;
 }
 
+/* Vertical stack: board on top, trash-selector row directly below. */
 .game-board {
   flex: 1 1 auto;
   min-height: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  container-type: size;
   width: 100%;
   max-width: 56rem;
   margin: 0 auto;
@@ -390,47 +417,30 @@ textarea {
 
 .game-board .board {
   flex: 0 0 auto;
-  /* Fallback (no container-query units): a square sized off the viewport. */
-  width: min(100%, 80vmin);
-  height: min(100%, 80vmin);
-  width: min(100cqw, 100cqh);
-  height: min(100cqw, 100cqh);
-}
-
-/* Vertical stack: board on top, trash-selector row directly below. Kept as an
-   inner wrapper so the board element's own flex layout is untouched. */
-.game-stack {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: clamp(0.35rem, 2cqh, 1rem);
-  width: 100%;
-  height: 100%;
+  /* --board-size is measured in JS (min of the container's width/height) so the
+     board is always the largest square that fits, without container-query units
+     (cqw/cqh), which aren't supported on older Android browsers. */
+  width: var(--board-size, min(100%, 80vmin));
+  height: var(--board-size, min(100%, 80vmin));
 }
 
 /* Trash row: same board layout as the game board, but auto height (one tile)
    and tiles sized off the shared width so they align with the board columns. */
 .game-board .trash-board {
-  width: min(100%, 80vmin);
-  width: min(100cqw, 100cqh);
+  width: var(--board-size, min(100%, 80vmin));
   height: auto;
   flex: 0 0 auto;
 }
 
 .game-board .trash-board .tile {
-  width: calc(min(100%, 80vmin) / var(--board-fit-divisor, 1));
-  width: calc(min(100cqw, 100cqh) / var(--board-fit-divisor, 1));
+  width: calc(
+    var(--board-size, min(100%, 80vmin)) / var(--board-fit-divisor, 1)
+  );
   height: auto;
   flex: 0 0 auto;
 }
 
-.game-footer {
-  display: flex;
-  flex-direction: column;
-}
-
-.game-footer .primary {
+.game .page-footer .primary {
   min-height: 3rem;
   font-size: 1.1rem;
   border: none;
@@ -440,7 +450,7 @@ textarea {
   cursor: pointer;
 }
 
-.game-footer .primary:disabled {
+.game .page-footer .primary:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
@@ -500,7 +510,7 @@ textarea {
 }
 
 @media (min-width: 600px) {
-  .game-footer .primary {
+  .game .page-footer .primary {
     align-self: center;
     min-width: 16rem;
   }

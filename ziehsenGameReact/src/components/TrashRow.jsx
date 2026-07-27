@@ -64,7 +64,7 @@ function TrashRow({ matrix, onColumnClick }) {
           }
         >
           <div className="tile">
-            <div className="tile-fill">🗑️</div>
+            <div className="tile-fill"></div>
           </div>
         </div>
       ))}
