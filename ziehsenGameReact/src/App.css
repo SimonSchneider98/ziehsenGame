@@ -1,9 +1,17 @@
-@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap");
+@font-face {
+  font-family: "Marlboro Regular";
+  src: url("/marlboro.regular.ttf") format("truetype");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
-  --app-font-size: 16px;
+  --background-color: #ffffff;
   --border-color: #dedede;
-  --primary-color: #646cff;
+  /* --primary-color: #646cff; */
+  --primary-color: #c60000;
+  --player-2-color: #b39330;
 }
 
 html,
@@ -11,8 +19,7 @@ body,
 #root {
   margin: 0;
   min-height: 100%;
-  font-family: "Plus Jakarta Sans", "Avenir Next", "Nunito Sans", sans-serif;
-  font-size: var(--app-font-size);
+  font-family: "Marlboro Regular", "Avenir Next", "Nunito Sans", sans-serif;
   line-height: 1.45;
   -webkit-tap-highlight-color: transparent;
 }
@@ -102,7 +109,7 @@ textarea {
 .landing .menu .primary {
   background: var(--primary-color);
   border: none;
-  color: #fff;
+  color: var(--background-color);
 }
 
 .landing .menu .secondary {
@@ -162,7 +169,7 @@ textarea {
 }
 
 .tile--selected {
-  outline: 2px solid #646cff;
+  outline: 2px solid var(--primary-color);
   background: rgba(100, 108, 255, 0.25);
 }
 
@@ -246,12 +253,12 @@ textarea {
   width: 1.35rem;
   height: 1.35rem;
   border-radius: 50%;
-  background: #fff;
+  background: var(--background-color);
   transition: transform 0.15s ease;
 }
 
 .switch:checked {
-  background: #646cff;
+  background: var(--primary-color);
 }
 
 .switch:checked::before {
@@ -279,7 +286,7 @@ textarea {
 .chip--active {
   background: var(--primary-color);
   border-color: var(--border-color);
-  color: #fff;
+  color: var(--background-color);
 }
 
 .icon-button {
@@ -418,9 +425,9 @@ textarea {
 }
 
 .config .page-footer .primary {
-  background: #646cff;
+  background: var(--primary-color);
   border: none;
-  color: #fff;
+  color: var(--background-color);
 }
 
 .config .page-footer .secondary {
@@ -484,9 +491,30 @@ textarea {
 }
 
 .game-turn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
+}
+
+.game-turn-text {
+  display: inline-flex;
+  align-items: center;
+  border-bottom: 0.18rem solid transparent;
   font-size: 1.5rem;
   font-weight: 600;
+}
+
+.game-turn-text--p1 {
+  border-bottom-color: var(--primary-color);
+}
+
+.game-turn-text--cpu {
+  border-bottom-color: var(--primary-color);
+}
+
+.game-turn-text--p2 {
+  border-bottom-color: var(--player-2-color);
 }
 
 /* Vertical stack: board on top, trash-selector row directly below. The area is
@@ -550,9 +578,17 @@ textarea {
   font-size: 1.1rem;
   border: none;
   border-radius: 0.5rem;
-  background: #646cff;
-  color: #fff;
+  background: var(--primary-color);
+  color: var(--background-color);
   cursor: pointer;
+}
+
+.game .page-footer .confirm-button--p1 {
+  background: var(--primary-color);
+}
+
+.game .page-footer .confirm-button--p2 {
+  background: var(--player-2-color);
 }
 
 .game .page-footer .primary:disabled {
@@ -579,7 +615,7 @@ textarea {
   max-width: 20rem;
   padding: 1.5rem;
   border-radius: 0.75rem;
-  background: white;
+  background: var(--background-color);
   text-align: center;
 }
 
@@ -604,8 +640,8 @@ textarea {
 
 .game-over-actions .primary {
   border: none;
-  background: #646cff;
-  color: #fff;
+  background: var(--primary-color);
+  color: var(--background-color);
 }
 
 .game-over-actions .secondary {

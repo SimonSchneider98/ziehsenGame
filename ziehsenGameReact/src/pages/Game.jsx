@@ -280,6 +280,21 @@ function Game() {
     return winnerId === "p1" ? "Player 1 has won!" : "Player 2 has won!";
   }
 
+  const turnTextClass = isVsCpu
+    ? "game-turn-text game-turn-text--cpu"
+    : currentId === "p1"
+      ? "game-turn-text game-turn-text--p1"
+      : currentId === "p2"
+        ? "game-turn-text game-turn-text--p2"
+        : "game-turn-text";
+
+  const confirmButtonClass =
+    !isVsCpu && currentId === "p1"
+      ? "primary confirm-button confirm-button--p1"
+      : !isVsCpu && currentId === "p2"
+        ? "primary confirm-button confirm-button--p2"
+        : "primary confirm-button";
+
   return (
     <div className="page game">
       <header className="page-header">
@@ -290,7 +305,9 @@ function Game() {
         >
           ‹
         </button>
-        <span className="game-turn">{turnLabel()}</span>
+        <span className="game-turn">
+          <span className={turnTextClass}>{turnLabel()}</span>
+        </span>
         <button className="icon-button" aria-label="Restart" onClick={restart}>
           ↻
         </button>
@@ -314,7 +331,7 @@ function Game() {
       </div>
       <footer className="page-footer">
         <button
-          className="primary"
+          className={confirmButtonClass}
           disabled={!selection || !isHumanTurn}
           onClick={confirmMove}
         >
