@@ -2,6 +2,8 @@
 
 :root {
   --app-font-size: 16px;
+  --border-color: #dedede;
+  --primary-color: #646cff;
 }
 
 html,
@@ -12,6 +14,7 @@ body,
   font-family: "Plus Jakarta Sans", "Avenir Next", "Nunito Sans", sans-serif;
   font-size: var(--app-font-size);
   line-height: 1.45;
+  -webkit-tap-highlight-color: transparent;
 }
 
 button,
@@ -19,19 +22,32 @@ input,
 select,
 textarea {
   font: inherit;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .page {
   display: flex;
+  padding: 0.5rem;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 1rem;
   height: 100vh;
   height: 100dvh;
+  box-sizing: border-box;
   overflow: hidden;
   text-align: center;
   user-select: none;
+}
+
+/* Common header/footer shared by every page. Both stay pinned while the
+   .page-content wrapper between them grows and scrolls. */
+.page-header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 0.5rem;
 }
 
 /* Shared page layout: header and footer stay pinned while the content wrapper
@@ -42,6 +58,13 @@ textarea {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  padding: 0 0.5rem;
+}
+
+.page-footer {
+  display: flex;
+  flex-direction: column;
+  padding: 0 0.5rem;
 }
 
 .menu {
@@ -70,6 +93,24 @@ textarea {
   font-size: 1.5rem;
 }
 
+.landing .menu .primary,
+.landing .menu .secondary {
+  min-height: 3rem;
+  border-radius: 0.5rem;
+}
+
+.landing .menu .primary {
+  background: var(--primary-color);
+  border: none;
+  color: #fff;
+}
+
+.landing .menu .secondary {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: inherit;
+}
+
 .settings-gear {
   min-width: unset;
   font-size: 1.5rem;
@@ -85,8 +126,6 @@ textarea {
   justify-content: center;
   width: 100%;
   aspect-ratio: 1 / 1;
-  max-height: 80%;
-  min-height: 0;
 }
 
 .board-column {
@@ -119,12 +158,11 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #3f583d;
+  background: var(--primary-color);
 }
 
 .tile--selected {
   outline: 2px solid #646cff;
-  outline-offset: -2px;
   background: rgba(100, 108, 255, 0.25);
 }
 
@@ -137,27 +175,28 @@ textarea {
   justify-content: flex-start;
   align-items: stretch;
   gap: 1.25rem;
-  padding: 1rem;
   text-align: left;
   box-sizing: border-box;
 }
 
-/* Common header/footer shared by every page. Both stay pinned while the
-   .page-content wrapper between them grows and scrolls. */
-.page-header {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+/* Config header: equal button-sized outer columns, middle grows to fill. */
+.config .page-header,
+.settings .page-header {
+  grid-template-columns: 2.75rem 1fr 2.75rem;
+}
+
+/* Settings page: top-aligned, children stretch to the full page width. */
+.page.settings {
+  justify-content: flex-start;
+  align-items: stretch;
+  text-align: left;
+  box-sizing: border-box;
 }
 
 .page-header h1 {
   margin: 0;
   font-size: 1.5rem;
-}
-
-.page-footer {
-  display: flex;
-  flex-direction: column;
+  text-align: center;
 }
 
 /* Inside the scrolling content wrapper, space the form sections evenly. */
@@ -226,11 +265,11 @@ textarea {
 }
 
 .chip {
-  flex: 1 1 auto;
+  flex: 1 1 0;
   min-height: 2.75rem;
   padding: 0.5rem 1rem;
   font-size: 1rem;
-  border: 1px solid currentColor;
+  border: 1px solid var(--border-color);
   border-radius: 0.5rem;
   background: transparent;
   color: inherit;
@@ -238,8 +277,8 @@ textarea {
 }
 
 .chip--active {
-  background: #646cff;
-  border-color: #646cff;
+  background: var(--primary-color);
+  border-color: var(--border-color);
   color: #fff;
 }
 
@@ -262,12 +301,12 @@ textarea {
 }
 
 .carousel > .icon-button {
-  flex: 0 0 clamp(2.75rem, 8vw, 3.5rem);
-  width: clamp(2.75rem, 8vw, 3.5rem);
+  flex: 0 0 clamp(2rem, 5vw, 2.5rem);
+  width: clamp(2rem, 5vw, 2.5rem);
   min-width: 0;
-  min-height: clamp(2.75rem, 8vw, 3.5rem);
+  min-height: clamp(2rem, 5vw, 2.5rem);
   padding: 0;
-  border: 1px solid currentColor;
+  border: none;
   border-radius: 0.75rem;
   display: grid;
   place-items: center;
@@ -277,10 +316,10 @@ textarea {
 .selected-board-info {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
   gap: 0.45rem;
   margin-top: 0.75rem;
-  margin-bottom: 0.5rem;
 }
 
 .carousel-item {
@@ -293,7 +332,7 @@ textarea {
   aspect-ratio: 1 / 1;
   min-height: 0;
   padding: 0.75rem;
-  border: 1px solid currentColor;
+  border: 1px solid var(--border-color);
   border-radius: 0.75rem;
   overflow: hidden;
 }
@@ -302,6 +341,9 @@ textarea {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .board {
@@ -315,7 +357,7 @@ textarea {
   flex: 0 0 auto;
   height: 100%;
   gap: 0;
-  justify-content: space-evenly;
+  justify-content: center;
 }
 
 .carousel-board .tile,
@@ -329,9 +371,37 @@ textarea {
   font-weight: 700;
 }
 
-.carousel-name,
 .carousel-count {
   opacity: 0.85;
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.carousel-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--border-color);
+  cursor: pointer;
+  padding: 0;
+  transition: background-color 0.2s ease;
+}
+
+.carousel-dot:hover {
+  opacity: 0.8;
+}
+
+.carousel-dot--active {
+  background-color: var(--primary-color);
 }
 
 .config .page-footer {
@@ -355,16 +425,36 @@ textarea {
 
 .config .page-footer .secondary {
   background: transparent;
-  border: 1px solid currentColor;
+  border: 1px solid var(--border-color);
   color: inherit;
 }
 
 /* Larger screens: constrain width and center the form. */
 @media (min-width: 600px) {
   .page.config {
+    padding: 1rem;
+  }
+
+  .config .page-header,
+  .config .page-footer {
+    width: 100%;
     max-width: 40rem;
     margin: 0 auto;
-    padding: 2rem;
+  }
+
+  .config .page-content {
+    width: 100%;
+  }
+
+  .config .page-content > * {
+    width: 100%;
+    max-width: 40rem;
+    margin: 0 auto;
+  }
+
+  .config .carousel {
+    max-width: 24rem;
+    margin: 0 auto;
   }
 
   .config .page-footer {
@@ -372,7 +462,7 @@ textarea {
   }
 
   .config .page-footer .primary {
-    flex: 2 1 0;
+    flex: 1 1 0;
   }
 
   .config .page-footer .secondary {
@@ -390,17 +480,19 @@ textarea {
 }
 
 .game .page-header {
-  justify-content: space-between;
   gap: 0.5rem;
 }
 
 .game-turn {
-  font-size: 1.1rem;
+  text-align: center;
+  font-size: 1.5rem;
   font-weight: 600;
 }
 
-/* Vertical stack: board on top, trash-selector row directly below. */
-.game-board {
+/* Vertical stack: board on top, trash-selector row directly below. The area is
+   the sizing container (its size is independent of --board-size, so measuring
+   it never feeds back into the board dimensions). */
+.game-area {
   flex: 1 1 auto;
   min-height: 0;
   display: flex;
@@ -415,28 +507,41 @@ textarea {
   overflow: hidden;
 }
 
+/* Wrapper that shrinks to the measured square board. */
+.game-board {
+  flex: 0 0 auto;
+  display: flex;
+}
+
 .game-board .board {
   flex: 0 0 auto;
-  /* --board-size is measured in JS (min of the container's width/height) so the
-     board is always the largest square that fits, without container-query units
-     (cqw/cqh), which aren't supported on older Android browsers. */
+  /* --board-size is measured in JS (largest square that fits, minus the trash
+     row) so the board works without container-query units (cqw/cqh), which
+     aren't supported on older Android browsers. */
   width: var(--board-size, min(100%, 80vmin));
   height: var(--board-size, min(100%, 80vmin));
 }
 
 /* Trash row: same board layout as the game board, but auto height (one tile)
    and tiles sized off the shared width so they align with the board columns. */
-.game-board .trash-board {
+.game-area .trash-board {
   width: var(--board-size, min(100%, 80vmin));
-  height: auto;
+  height: fit-content;
+  aspect-ratio: unset;
+  margin-top: 1.5rem;
   flex: 0 0 auto;
 }
 
-.game-board .trash-board .tile {
+.game-area .trash-board .board-column {
+  height: auto;
+}
+
+.game-area .trash-board .tile {
   width: calc(
     var(--board-size, min(100%, 80vmin)) / var(--board-fit-divisor, 1)
   );
   height: auto;
+  aspect-ratio: 1 / 1;
   flex: 0 0 auto;
 }
 
@@ -474,7 +579,7 @@ textarea {
   max-width: 20rem;
   padding: 1.5rem;
   border-radius: 0.75rem;
-  background: #1a1a1a;
+  background: white;
   text-align: center;
 }
 
@@ -505,7 +610,7 @@ textarea {
 
 .game-over-actions .secondary {
   background: transparent;
-  border: 1px solid currentColor;
+  border: 1px solid var(--border-color);
   color: inherit;
 }
 

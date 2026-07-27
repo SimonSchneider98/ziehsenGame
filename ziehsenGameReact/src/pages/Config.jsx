@@ -41,7 +41,7 @@ function Config() {
           aria-label="Back"
           onClick={() => navigate("/")}
         >
-          ←
+          ‹
         </button>
         <h1>Custom Game</h1>
       </header>
@@ -103,16 +103,15 @@ function Config() {
               }
               onClick={() => update({ layoutMode: "custom" })}
             >
-              Choose
+              Select
             </button>
           </div>
           {config.layoutMode === "custom" && currentLayout && (
             <>
               <div className="selected-board-info">
                 <span className="carousel-number">#{currentLayout.number}</span>
-                <span className="carousel-name">{currentLayout.file}</span>
                 <span className="carousel-count">
-                  {currentLayout.ziehsen} Ziehsen
+                  ({currentLayout.ziehsen} Ziehsen)
                 </span>
               </div>
               <div className="carousel">
@@ -135,6 +134,18 @@ function Config() {
                 >
                   ›
                 </button>
+              </div>
+              <div className="carousel-dots">
+                {layouts.map((layout, index) => (
+                  <button
+                    key={layout.name}
+                    className={`carousel-dot ${
+                      index === carouselIndex ? "carousel-dot--active" : ""
+                    }`}
+                    aria-label={`Board ${layout.number}`}
+                    onClick={() => update({ layout: layout.name })}
+                  />
+                ))}
               </div>
             </>
           )}

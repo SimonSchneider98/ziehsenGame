@@ -113,6 +113,22 @@ function Game() {
 
   const matrix = layout.matrix;
 
+  // Same fit-divisor math as TrashRow: it renders one tile per non-empty
+  // column, each sized `board-size / fitDivisor`. We need it here to reserve
+  // vertical space for the trash row when sizing the board square.
+  const fitDivisor = useMemo(() => {
+    const columns = matrix.filter((column) => column.some(Boolean));
+    const maxStack = columns.reduce(
+      (max, column) =>
+        Math.max(
+          max,
+          column.reduce((count, exists) => (exists ? count + 1 : count), 0),
+        ),
+      0,
+    );
+    return Math.max(1, columns.length, maxStack);
+  }, [matrix]);
+
   const [removed, setRemoved] = useState(() => makeEmptyRemoved(matrix));
   const [selection, setSelection] = useState(null); // { column, count } | null
   const [currentIndex, setCurrentIndex] = useState(startIndex);
@@ -121,9 +137,13 @@ function Game() {
   const currentId = players[currentIndex];
   const isHumanTurn = !result && currentId !== "cpu";
 
-  // Size the board as the largest square that fits its container. Container
+  // Size the board as the largest square that fits the game area. Container
   // query units (cqw/cqh) aren't supported on older Android browsers, so we
-  // measure the container and expose the side length as a CSS variable.
+  // measure the (stable) game area and expose the side length as a CSS
+  // variable. The trash row is a sibling of the board inside this area, so we
+  // reserve its space here: it consumes its top margin plus one tile of height
+  // `board-size / fitDivisor`. Solving `side + margin + side / fitDivisor <=
+  // availHeight` for the square side keeps board + trash fully visible.
   const boardBoxRef = useRef(null);
   useEffect(() => {
     const element = boardBoxRef.current;
@@ -134,17 +154,24 @@ function Game() {
         parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
       const padY =
         parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
-      const side = Math.min(
-        element.clientWidth - padX,
-        element.clientHeight - padY,
-      );
+      const availWidth = element.clientWidth - padX;
+      const availHeight = element.clientHeight - padY;
+
+      const trash = element.querySelector(".trash-board");
+      const trashMargin = trash
+        ? parseFloat(getComputedStyle(trash).marginTop)
+        : 0;
+      const heightForBoard =
+        ((availHeight - trashMargin) * fitDivisor) / (fitDivisor + 1);
+
+      const side = Math.min(availWidth, heightForBoard);
       element.style.setProperty("--board-size", `${Math.max(0, side)}px`);
     };
     update();
     const observer = new ResizeObserver(update);
     observer.observe(element);
     return () => observer.disconnect();
-  }, []);
+  }, [fitDivisor]);
 
   // Derive the selected tiles (top `count` active tiles of the chosen column).
   const selected = useMemo(() => {
@@ -198,23 +225,6 @@ function Game() {
     const active = activeIndices(matrix[columnIndex], removed[columnIndex]);
     if (active.length === 0) return;
     setSelection({ column: columnIndex, count: active.length });
-  }
-
-  function handleTileClick(columnIndex, tileIndex) {
-    if (!isHumanTurn || !selection || selection.column !== columnIndex)
-      return false;
-
-    const active = activeIndices(matrix[columnIndex], removed[columnIndex]);
-    const selectedIndices = active.slice(0, selection.count);
-    if (!selectedIndices.includes(tileIndex)) return false;
-
-    setSelection((previous) => {
-      if (!previous || previous.column !== columnIndex) return previous;
-      const next = Math.max(0, previous.count - 1);
-      if (next === 0) return null;
-      return { ...previous, count: next };
-    });
-    return true;
   }
 
   function confirmMove() {
@@ -278,7 +288,7 @@ function Game() {
           aria-label="Back"
           onClick={() => navigate(-1)}
         >
-          ←
+          ‹
         </button>
         <span className="game-turn">{turnLabel()}</span>
         <button className="icon-button" aria-label="Restart" onClick={restart}>
@@ -287,18 +297,19 @@ function Game() {
       </header>
 
       <div className="page-content">
-        <div className="game-board" ref={boardBoxRef}>
-          <Board
-            matrix={matrix}
-            removed={removed}
-            selected={selected}
-            onColumnClick={isHumanTurn ? handleColumnClick : undefined}
-            onTileClick={isHumanTurn ? handleTileClick : undefined}
-          />
-          {/* <TrashRow
+        <div className="game-area" ref={boardBoxRef}>
+          <div className="game-board">
+            <Board
+              matrix={matrix}
+              removed={removed}
+              selected={selected}
+              onColumnClick={isHumanTurn ? handleColumnClick : undefined}
+            />
+          </div>
+          <TrashRow
             matrix={matrix}
             onColumnClick={isHumanTurn ? handleTrashClick : undefined}
-          /> */}
+          />
         </div>
       </div>
       <footer className="page-footer">

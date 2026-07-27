@@ -10,15 +10,19 @@ function Landing() {
         <h1>Ziehsen Game</h1>
         <div className="menu">
           <button
-            className="start-game-button"
+            className="start-game-button primary"
             onClick={() =>
               navigate("/game", { state: { config: DEFAULT_CONFIG } })
             }
           >
             Start Game
           </button>
-          <button onClick={() => navigate("/config")}>Custom Game</button>
-          <button onClick={() => navigate("/settings")}>Settings</button>
+          <button className="secondary" onClick={() => navigate("/config")}>
+            Custom Game
+          </button>
+          <button className="secondary" onClick={() => navigate("/settings")}>
+            Settings
+          </button>
         </div>
       </div>
     </div>

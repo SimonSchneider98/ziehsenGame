@@ -23,7 +23,7 @@ function Settings() {
           aria-label="Back"
           onClick={() => navigate("/")}
         >
-          ←
+          ‹
         </button>
         <h1>Settings</h1>
       </header>
@@ -36,6 +36,15 @@ function Settings() {
               className="switch"
               checked={settings.muted}
               onChange={() => toggle("muted")}
+            />
+          </label>
+          <label className="setting-row">
+            <span>Taunt (Harald mode)</span>
+            <input
+              type="checkbox"
+              className="switch"
+              checked={settings.tauntHaraldMode}
+              onChange={() => toggle("tauntHaraldMode")}
             />
           </label>
         </section>
