@@ -64,7 +64,15 @@ function TrashRow({ matrix, onColumnClick }) {
           }
         >
           <div className="tile">
-            <div className="tile-fill"></div>
+            <div className="tile-fill">
+              <img
+                className="tile-icon"
+                src={`${import.meta.env.BASE_URL}ashtray.png`}
+                alt=""
+                aria-hidden="true"
+                draggable="false"
+              />
+            </div>
           </div>
         </div>
       ))}

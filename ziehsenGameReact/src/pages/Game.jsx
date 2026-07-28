@@ -388,7 +388,13 @@ function Game() {
 
       <div className="page-content">
         <div className="game-area" ref={boardBoxRef}>
-          <div className="game-board">
+          <div
+            className={
+              !isVsCpu && currentId === "p2"
+                ? "game-board game-board--p2"
+                : "game-board"
+            }
+          >
             <Board
               matrix={matrix}
               removed={removed}

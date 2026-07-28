@@ -161,16 +161,28 @@ textarea {
 .tile-fill {
   width: 100%;
   height: 100%;
+  box-sizing: border-box;
+  border: 2px solid transparent;
   border-radius: 0.2rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--primary-color);
 }
 
-.tile--selected {
-  outline: 2px solid var(--primary-color);
-  background: rgba(100, 108, 255, 0.25);
+.tile-icon {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
+.tile--selected .tile-fill {
+  border-color: var(--primary-color);
+}
+
+.game-board--p2 .tile--selected .tile-fill {
+  border-color: var(--player-2-color);
 }
 
 .tile--removed {
@@ -327,7 +339,8 @@ textarea {
   color: var(--player-2-color);
 }
 
-.icon-button--p1[aria-label="Restart"] {
+.icon-button--p1[aria-label="Restart"],
+.icon-button[aria-label="Restart"] {
   color: var(--primary-color);
 }
 

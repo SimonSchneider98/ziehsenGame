@@ -93,7 +93,15 @@ function Board({ matrix, removed, selected, onColumnClick, onTileClick }) {
                     : undefined
                 }
               >
-                <div className="tile-fill"></div>
+                <div className="tile-fill">
+                  <img
+                    className="tile-icon"
+                    src={`${import.meta.env.BASE_URL}ziehseOn.svg`}
+                    alt=""
+                    aria-hidden="true"
+                    draggable="false"
+                  />
+                </div>
               </div>
             );
           })}
