@@ -140,9 +140,12 @@ function Game() {
   const [selection, setSelection] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(startIndex);
   const [result, setResult] = useState(null); // { loserIndex } | null
+  // Set the instant a winning move lands; locks the board while we wait to
+  // reveal the game-over dialog. `result` is populated after the delay.
+  const [pendingResult, setPendingResult] = useState(null); // { loserIndex } | null
 
   const currentId = players[currentIndex];
-  const isHumanTurn = !result && currentId !== "cpu";
+  const isHumanTurn = !result && !pendingResult && currentId !== "cpu";
 
   // Size the board as the largest square that fits the game area. Container
   // query units (cqw/cqh) aren't supported on older Android browsers, so we
@@ -212,7 +215,8 @@ function Game() {
         // player is forced to take it and loses; if none remain, the mover
         // took the last tile and loses.
         const loserIndex = remaining === 0 ? moverIndex : 1 - moverIndex;
-        setResult({ loserIndex });
+        // Lock the board now; the game-over dialog is revealed after a delay.
+        setPendingResult({ loserIndex });
       } else {
         setCurrentIndex(1 - moverIndex);
       }
@@ -301,11 +305,20 @@ function Game() {
     setSelection(null);
     setCurrentIndex(startIndex);
     setResult(null);
+    setPendingResult(null);
   }
+
+  // Reveal the game-over dialog 700ms after the winning move. The board stays
+  // locked during this window via `pendingResult`.
+  useEffect(() => {
+    if (!pendingResult) return undefined;
+    const timer = setTimeout(() => setResult(pendingResult), 1000);
+    return () => clearTimeout(timer);
+  }, [pendingResult]);
 
   // CPU turn: after a short pause, play optimal misere Nim.
   useEffect(() => {
-    if (result || currentId !== "cpu") return;
+    if (result || pendingResult || currentId !== "cpu") return;
     const timer = setTimeout(() => {
       const move = pickPerfectMisereMove(matrix, removed);
       if (!move) return;
@@ -320,7 +333,15 @@ function Game() {
       finishTurn(nextRemoved, currentIndex);
     }, 700);
     return () => clearTimeout(timer);
-  }, [currentId, currentIndex, matrix, removed, result, finishTurn]);
+  }, [
+    currentId,
+    currentIndex,
+    matrix,
+    removed,
+    result,
+    pendingResult,
+    finishTurn,
+  ]);
 
   function turnLabel() {
     if (isVsCpu) return currentId === "player" ? "Your turn" : "Harald's turn";
