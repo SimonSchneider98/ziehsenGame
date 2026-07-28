@@ -323,6 +323,18 @@ textarea {
   padding-bottom: 0.3rem;
 }
 
+.icon-button--p2[aria-label="Back"] {
+  color: var(--player-2-color);
+}
+
+.icon-button--p1[aria-label="Restart"] {
+  color: var(--primary-color);
+}
+
+.icon-button--p2[aria-label="Restart"] {
+  color: var(--player-2-color);
+}
+
 .carousel {
   display: flex;
   align-items: center;
@@ -386,7 +398,6 @@ textarea {
   gap: 0;
   align-items: flex-end;
   justify-content: space-evenly;
-  background: lightgrey;
 }
 
 .board-column {
@@ -405,10 +416,6 @@ textarea {
 
 .carousel-number {
   font-weight: 700;
-}
-
-.carousel-count {
-  opacity: 0.85;
 }
 
 .carousel-dots {
@@ -671,6 +678,10 @@ textarea {
   border: none;
   background: var(--primary-color);
   color: var(--background-color);
+}
+
+.game-over-actions .game-over-restart--p2 {
+  background: var(--player-2-color);
 }
 
 .game-over-actions .secondary {

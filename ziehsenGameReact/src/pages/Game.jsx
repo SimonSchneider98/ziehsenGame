@@ -349,11 +349,26 @@ function Game() {
         ? "primary confirm-button confirm-button--p2"
         : "primary confirm-button";
 
+  const restartButtonClass =
+    result && !isVsCpu && players[1 - result.loserIndex] === "p2"
+      ? "primary game-over-restart--p2"
+      : "primary";
+
+  const backButtonClass =
+    currentId === "p2" ? "icon-button icon-button--p2" : "icon-button";
+
+  const restartIconClass =
+    !isVsCpu && currentId === "p1"
+      ? "icon-button icon-button--p1"
+      : !isVsCpu && currentId === "p2"
+        ? "icon-button icon-button--p2"
+        : "icon-button";
+
   return (
     <div className="page game">
       <header className="page-header">
         <button
-          className="icon-button"
+          className={backButtonClass}
           aria-label="Back"
           onClick={() => navigate(-1)}
         >
@@ -362,7 +377,11 @@ function Game() {
         <span className="game-turn">
           <span className={turnTextClass}>{turnLabel()}</span>
         </span>
-        <button className="icon-button" aria-label="Restart" onClick={restart}>
+        <button
+          className={restartIconClass}
+          aria-label="Restart"
+          onClick={restart}
+        >
           ↻
         </button>
       </header>
@@ -400,7 +419,7 @@ function Game() {
           <div className="game-over-card">
             <h2>{resultMessage()}</h2>
             <div className="game-over-actions">
-              <button className="primary" onClick={restart}>
+              <button className={restartButtonClass} onClick={restart}>
                 Restart
               </button>
               <button className="secondary" onClick={() => navigate("/")}>
