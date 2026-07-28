@@ -41,6 +41,15 @@ function Settings() {
             />
           </label>
           <label className="setting-row">
+            <span>Granular selection</span>
+            <input
+              type="checkbox"
+              className="switch"
+              checked={settings.granularSelection}
+              onChange={() => toggle("granularSelection")}
+            />
+          </label>
+          <label className="setting-row">
             <span>Taunt (Harald mode)</span>
             <input
               type="checkbox"

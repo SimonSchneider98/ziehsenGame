@@ -4,6 +4,7 @@ import Board from "../components/Board";
 import TrashRow from "../components/TrashRow";
 import { getLayout, layouts } from "../layouts";
 import { loadConfig } from "../gameConfig";
+import { loadSettings } from "../settings";
 
 function randomInt(max) {
   return Math.floor(Math.random() * max);
@@ -95,6 +96,10 @@ function Game() {
     [location.state],
   );
 
+  // Granular selection lets the player pick individual tiles within a column
+  // instead of only the top `count` tiles.
+  const granularSelection = useMemo(() => loadSettings().granularSelection, []);
+
   const isVsCpu = config.mode === "cpu";
   const players = useMemo(
     () => (isVsCpu ? ["player", "cpu"] : ["p1", "p2"]),
@@ -130,7 +135,9 @@ function Game() {
   }, [matrix]);
 
   const [removed, setRemoved] = useState(() => makeEmptyRemoved(matrix));
-  const [selection, setSelection] = useState(null); // { column, count } | null
+  // Classic mode: { column, count } (top `count` active tiles).
+  // Granular mode: { column, indices } (exact tile indices selected).
+  const [selection, setSelection] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(startIndex);
   const [result, setResult] = useState(null); // { loserIndex } | null
 
@@ -173,16 +180,23 @@ function Game() {
     return () => observer.disconnect();
   }, [fitDivisor]);
 
-  // Derive the selected tiles (top `count` active tiles of the chosen column).
+  // Derive the selected tiles. Classic mode selects the top `count` active
+  // tiles; granular mode selects exactly the chosen tile indices.
   const selected = useMemo(() => {
     const grid = makeEmptyRemoved(matrix);
     if (selection) {
-      const active = activeIndices(
-        matrix[selection.column],
-        removed[selection.column],
-      );
-      for (let k = 0; k < selection.count && k < active.length; k += 1) {
-        grid[selection.column][active[k]] = true;
+      if (selection.indices) {
+        for (const index of selection.indices) {
+          grid[selection.column][index] = true;
+        }
+      } else {
+        const active = activeIndices(
+          matrix[selection.column],
+          removed[selection.column],
+        );
+        for (let k = 0; k < selection.count && k < active.length; k += 1) {
+          grid[selection.column][active[k]] = true;
+        }
       }
     }
     return grid;
@@ -208,6 +222,9 @@ function Game() {
 
   function handleColumnClick(columnIndex) {
     if (!isHumanTurn) return;
+    // In granular mode, selection is driven entirely by individual tile clicks;
+    // clicks on the column gaps do nothing.
+    if (granularSelection) return;
     const active = activeIndices(matrix[columnIndex], removed[columnIndex]);
     if (active.length === 0) return;
     setSelection((previous) => {
@@ -220,20 +237,57 @@ function Game() {
     });
   }
 
+  // Granular mode: toggle a single tile. Selecting a tile in a different column
+  // discards the previous column's selection. Returns true when the click was
+  // handled so the Board can stop it bubbling to the column handler.
+  function handleTileClick(columnIndex, tileIndex) {
+    if (!isHumanTurn) return false;
+    if (removed[columnIndex]?.[tileIndex]) return false;
+    setSelection((previous) => {
+      if (!previous || previous.column !== columnIndex) {
+        return { column: columnIndex, indices: [tileIndex] };
+      }
+      const has = previous.indices.includes(tileIndex);
+      const indices = has
+        ? previous.indices.filter((index) => index !== tileIndex)
+        : [...previous.indices, tileIndex];
+      if (indices.length === 0) return null;
+      return { column: columnIndex, indices };
+    });
+    return true;
+  }
+
   function handleTrashClick(columnIndex) {
     if (!isHumanTurn) return;
     const active = activeIndices(matrix[columnIndex], removed[columnIndex]);
     if (active.length === 0) return;
-    setSelection({ column: columnIndex, count: active.length });
+    // If the whole column is already selected, tapping the trash tile clears it.
+    const fullySelected =
+      selection?.column === columnIndex &&
+      (selection.indices
+        ? active.every((index) => selection.indices.includes(index))
+        : selection.count >= active.length);
+    if (fullySelected) {
+      setSelection(null);
+      return;
+    }
+    if (granularSelection) {
+      setSelection({ column: columnIndex, indices: active });
+    } else {
+      setSelection({ column: columnIndex, count: active.length });
+    }
   }
 
   function confirmMove() {
     if (!selection || !isHumanTurn) return;
-    const active = activeIndices(
-      matrix[selection.column],
-      removed[selection.column],
-    );
-    const toRemove = new Set(active.slice(0, selection.count));
+    const toRemove = selection.indices
+      ? new Set(selection.indices)
+      : new Set(
+          activeIndices(
+            matrix[selection.column],
+            removed[selection.column],
+          ).slice(0, selection.count),
+        );
     const nextRemoved = removed.map((column, c) =>
       c === selection.column
         ? column.map((value, i) => value || toRemove.has(i))
@@ -321,6 +375,9 @@ function Game() {
               removed={removed}
               selected={selected}
               onColumnClick={isHumanTurn ? handleColumnClick : undefined}
+              onTileClick={
+                isHumanTurn && granularSelection ? handleTileClick : undefined
+              }
             />
           </div>
           <TrashRow
