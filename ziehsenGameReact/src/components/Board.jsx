@@ -78,6 +78,11 @@ function Board({ matrix, removed, selected, onColumnClick, onTileClick }) {
             ]
               .filter(Boolean)
               .join(" ");
+            const iconSrc = isRemoved
+              ? "ziehseOff.svg"
+              : isSelected
+                ? "ziehseOn.svg"
+                : "ziehse.svg";
             return (
               <div
                 className={className}
@@ -96,7 +101,7 @@ function Board({ matrix, removed, selected, onColumnClick, onTileClick }) {
                 <div className="tile-fill">
                   <img
                     className="tile-icon"
-                    src={`${import.meta.env.BASE_URL}ziehseOn.svg`}
+                    src={`${import.meta.env.BASE_URL}${iconSrc}`}
                     alt=""
                     aria-hidden="true"
                     draggable="false"

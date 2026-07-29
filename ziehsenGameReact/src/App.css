@@ -177,16 +177,8 @@ textarea {
   user-select: none;
 }
 
-.tile--selected .tile-fill {
-  border-color: var(--primary-color);
-}
-
-.game-board--p2 .tile--selected .tile-fill {
-  border-color: var(--player-2-color);
-}
-
 .tile--removed {
-  opacity: 0.25;
+  opacity: 0.5;
 }
 
 /* Config page: a scrollable, top-aligned form (mobile-first). */
