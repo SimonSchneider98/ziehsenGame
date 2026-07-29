@@ -1,9 +1,8 @@
 export const SETTINGS_STORAGE_KEY = "ziehsen.settings";
 
 export const DEFAULT_SETTINGS = {
-  muted: false, // mute all app sound
   tauntHaraldMode: false,
-  granularSelection: false,
+  columnSelection: false,
 };
 
 export function loadSettings() {

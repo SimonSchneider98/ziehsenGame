@@ -32,21 +32,12 @@ function Settings() {
       <div className="page-content">
         <section className="config-section">
           <label className="setting-row">
-            <span>Mute all sound</span>
+            <span>Column selection</span>
             <input
               type="checkbox"
               className="switch"
-              checked={settings.muted}
-              onChange={() => toggle("muted")}
-            />
-          </label>
-          <label className="setting-row">
-            <span>Granular selection</span>
-            <input
-              type="checkbox"
-              className="switch"
-              checked={settings.granularSelection}
-              onChange={() => toggle("granularSelection")}
+              checked={settings.columnSelection}
+              onChange={() => toggle("columnSelection")}
             />
           </label>
           <label className="setting-row">

@@ -580,6 +580,30 @@ textarea {
 .game-board {
   flex: 0 0 auto;
   display: flex;
+  position: relative;
+}
+
+/* Taunt image shown after the CPU's first winning move. Anchored to the board's
+   bottom-right corner and sized to 25% of the board height. */
+.game-board-taunt {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  height: 45%;
+  width: auto;
+  pointer-events: none;
+  z-index: 2;
+  transform: translate(10%, 10%);
+  animation: taunt-fade-in 3s ease-in 500ms both;
+}
+
+@keyframes taunt-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .game-board .board {

@@ -40,6 +40,9 @@ function pickRandomLegalMove(heaps) {
   };
 }
 
+// Optimal misère Nim move. Returns the move plus a `perfect` flag: true when a
+// genuinely winning move exists, false when the position is lost and we fall
+// back to a random legal move.
 function pickPerfectMisereMove(matrix, removed) {
   const heaps = matrix
     .map((column, c) => ({
@@ -59,13 +62,13 @@ function pickPerfectMisereMove(matrix, removed) {
   if (heapsOverOne.length <= 1) {
     if (heapsOverOne.length === 0) {
       // All heaps are size 1. Best play removes exactly one.
-      return { column: heaps[0].column, count: 1 };
+      return { column: heaps[0].column, count: 1, perfect: true };
     }
 
     const bigHeap = heapsOverOne[0];
     const targetSize = heapsOfOne % 2 === 0 ? 1 : 0;
     const count = bigHeap.size - targetSize;
-    return { column: bigHeap.column, count };
+    return { column: bigHeap.column, count, perfect: true };
   }
 
   // Normal Nim phase: move to nim-sum 0.
@@ -75,13 +78,17 @@ function pickPerfectMisereMove(matrix, removed) {
       const heap = heaps[i];
       const targetSize = heap.size ^ nimSum;
       if (targetSize < heap.size) {
-        return { column: heap.column, count: heap.size - targetSize };
+        return {
+          column: heap.column,
+          count: heap.size - targetSize,
+          perfect: true,
+        };
       }
     }
   }
 
   // Losing position (nim-sum 0): no winning move exists, so randomize.
-  return pickRandomLegalMove(heaps);
+  return { ...pickRandomLegalMove(heaps), perfect: false };
 }
 
 function Game() {
@@ -96,9 +103,14 @@ function Game() {
     [location.state],
   );
 
-  // Granular selection lets the player pick individual tiles within a column
-  // instead of only the top `count` tiles.
-  const granularSelection = useMemo(() => loadSettings().granularSelection, []);
+  // Column selection restricts the player to picking the top `count` tiles of a
+  // column. When it's off (the default), granular selection lets the player pick
+  // individual tiles within a column.
+  const columnSelection = useMemo(() => loadSettings().columnSelection, []);
+
+  // "Taunt (Harald mode)" gates the taunt image that appears on the CPU's first
+  // winning move.
+  const tauntHaraldMode = useMemo(() => loadSettings().tauntHaraldMode, []);
 
   const isVsCpu = config.mode === "cpu";
   const players = useMemo(
@@ -143,6 +155,9 @@ function Game() {
   // Set the instant a winning move lands; locks the board while we wait to
   // reveal the game-over dialog. `result` is populated after the delay.
   const [pendingResult, setPendingResult] = useState(null); // { loserIndex } | null
+  // Revealed once the CPU makes its first winning move (an N-position move that
+  // leaves the player unable to win with perfect play).
+  const [showTaunt, setShowTaunt] = useState(false);
 
   const currentId = players[currentIndex];
   const isHumanTurn = !result && !pendingResult && currentId !== "cpu";
@@ -228,7 +243,7 @@ function Game() {
     if (!isHumanTurn) return;
     // In granular mode, selection is driven entirely by individual tile clicks;
     // clicks on the column gaps do nothing.
-    if (granularSelection) return;
+    if (!columnSelection) return;
     const active = activeIndices(matrix[columnIndex], removed[columnIndex]);
     if (active.length === 0) return;
     setSelection((previous) => {
@@ -275,7 +290,7 @@ function Game() {
       setSelection(null);
       return;
     }
-    if (granularSelection) {
+    if (!columnSelection) {
       setSelection({ column: columnIndex, indices: active });
     } else {
       setSelection({ column: columnIndex, count: active.length });
@@ -306,6 +321,7 @@ function Game() {
     setCurrentIndex(startIndex);
     setResult(null);
     setPendingResult(null);
+    setShowTaunt(false);
   }
 
   // Reveal the game-over dialog 700ms after the winning move. The board stays
@@ -330,6 +346,17 @@ function Game() {
           ? column.map((value, i) => value || toRemove.has(i))
           : column,
       );
+
+      // Taunt on a perfect move, but not when it leaves a single tile (the game
+      // is effectively over and the game-over card takes over).
+      if (
+        move.perfect &&
+        tauntHaraldMode &&
+        countActive(matrix, nextRemoved) > 1
+      ) {
+        setShowTaunt(true);
+      }
+
       finishTurn(nextRemoved, currentIndex);
     }, 700);
     return () => clearTimeout(timer);
@@ -422,9 +449,17 @@ function Game() {
               selected={selected}
               onColumnClick={isHumanTurn ? handleColumnClick : undefined}
               onTileClick={
-                isHumanTurn && granularSelection ? handleTileClick : undefined
+                isHumanTurn && !columnSelection ? handleTileClick : undefined
               }
             />
+            {showTaunt && !result && (
+              <img
+                className="game-board-taunt"
+                src={`${import.meta.env.BASE_URL}haschSchunVerloreOder.png`}
+                alt=""
+                aria-hidden="true"
+              />
+            )}
           </div>
           <TrashRow
             matrix={matrix}
